@@ -1,0 +1,295 @@
+.login-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-image: url('./baground-login.jpg');
+    background-size: cover;
+    background-position: center;
+
+    .overlay {
+        width: 100%;
+        min-height: 100vh;
+        z-index: 2;
+        position: absolute;
+        // top: 0;
+        left: 0;
+        background-color: rgba(0, 0, 0, 0.25);
+    }
+
+    .login-container {
+        position: relative;
+        z-index: 2;
+        width: 450px;
+        background-color: rgba(2, 2, 2, 0.5);
+        padding: 20px;
+        text-align: center;
+        color: white;
+        margin: 10px;
+        gap: 20px;
+        display: flex;
+        flex-direction: column;
+
+        /* Glassmorphism effekt */
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
+
+        /* Sahifa ochilganda animatsiya */
+        animation: fadeInUp 0.7s ease;
+
+        .login-text {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-direction: column;
+            h1{
+                letter-spacing:1px;  
+            }
+
+            img {
+                width: 100px;
+            }
+        }
+
+        form {
+            gap: 20px;
+            display: flex;
+            flex-direction: column;
+
+            input {
+                padding: 10px;
+                background-color: rgba(2, 2, 2, 0.6);
+                border: none;
+                border-bottom: 2px solid transparent;
+                font-size: 15px;
+                color: white;
+                border-radius: 2px;
+                transition: border-bottom 0.3s ease, box-shadow 0.3s ease;
+
+                &::placeholder {
+                    color: white;
+                }
+
+                &:hover {
+                    border-bottom: 2px solid #888;
+                }
+
+                &:focus {
+                    border-bottom: 2px solid #f20114;
+                    outline: none;
+                    box-shadow: 0 2px 8px rgba(242, 1, 20, 0.5);
+                }
+            }
+
+            button {
+                background-color: rgba(2, 2, 2, 0.7);
+                padding: 10px;
+                color: grey;
+                font-size: 17px;
+                cursor: pointer;
+                border: none;
+                border-bottom: 1px solid transparent;
+                transition: 0.3s ease;
+                letter-spacing: 2px;  
+
+                &:hover {
+                    color: white;
+                    border-bottom: 1px solid #f20114;
+                }
+
+                &:active {
+                    transform: scale(0.97);
+                }
+            }
+        }
+
+        .link-create {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            border-top: 2px solid #f2011561;
+            padding: 10px 0;
+            width: 100%;
+
+            a {
+                text-decoration: none;
+                background-color: rgba(2, 2, 2, 0.7);
+                padding: 10px;
+                color: grey;
+                font-size: 17px;
+                cursor: pointer;
+                border: none;
+                border-bottom: 1px solid transparent;
+                transition: 0.3s ease;
+                letter-spacing:0.5px;  
+
+                &:hover {
+                    color: white;
+                    border-bottom: 1px solid #f20114;
+                }
+
+                &:active {
+                    transform: scale(0.97);
+                }
+            }
+        }
+    }
+
+    .register-container {
+        position: relative;
+        z-index: 2;
+        width: 450px;
+        background-color: rgba(2, 2, 2, 0.5);
+        padding: 20px;
+        text-align: center;
+        color: white;
+        margin: 10px;
+        gap: 20px;
+        display: flex;
+        flex-direction: column;
+
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
+
+        animation: fadeInUp 0.7s ease;
+
+        .login-text {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-direction: column;
+            font-size: 13px;
+            letter-spacing: 2px;  
+
+            img {
+                width: 100px;
+            }
+        }
+
+        form {
+            gap: 20px;
+            display: flex;
+            flex-direction: column;
+
+            input {
+                padding: 10px;
+                background-color: rgba(2, 2, 2, 0.6);
+                border: none;
+                border-bottom: 2px solid transparent;
+                font-size: 15px;
+                color: white;
+                border-radius: 2px;
+                transition: border-bottom 0.3s ease, box-shadow 0.3s ease;
+
+                &::placeholder {
+                    color: white;
+                }
+
+                &:hover {
+                    border-bottom: 2px solid #888;
+                }
+
+                &:focus {
+                    border-bottom: 2px solid #f20114;
+                    outline: none;
+                    box-shadow: 0 2px 8px rgba(242, 1, 20, 0.5);
+                }
+            }
+
+            button {
+                background-color: rgba(2, 2, 2, 0.7);
+                padding: 10px;
+                color: grey;
+                font-size: 17px;
+                cursor: pointer;
+                border: none;
+                border-bottom: 1px solid transparent;
+                transition: 0.3s ease;
+                letter-spacing:1.5px;  
+
+
+                &:hover {
+                    color: white;
+                    border-bottom: 1px solid #f20114;
+                }
+
+                &:active {
+                    transform: scale(0.97);
+                }
+            }
+        }
+
+        .link-login {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            border-top: 2px solid #f2011561;
+            padding: 10px 0;
+            width: 100%;
+
+            a { 
+                text-decoration: none;
+                background-color: rgba(2, 2, 2, 0.7);
+                padding: 10px;
+                color: grey;
+                font-size: 17px;
+                cursor: pointer;
+                border: none;
+                border-bottom: 1px solid transparent;
+                transition: 0.3s ease;
+                letter-spacing:1.5px;  
+
+
+                &:hover {
+                    color: white;
+                    border-bottom: 1px solid #f20114;
+                }
+
+                &:active {
+                    transform: scale(0.97);
+                }
+            }
+        }
+    }
+}
+.success-message {
+  margin-top: 15px;
+  background-color: #4caf50;
+  color: white;
+  padding: 12px 18px;
+  border-radius: 10px;
+  text-align: center;
+  font-weight: 500;
+  box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+  animation: fadeIn 0.4s ease-in-out;
+
+  p {
+    margin: 0;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Animatsiya keyframe */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

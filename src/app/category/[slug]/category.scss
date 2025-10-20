@@ -1,0 +1,77 @@
+.pagination {
+  margin: 30px auto;
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+
+  button {
+    background: #2c2c2c; // orqa fon qora
+    color: #fff;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.3s;
+
+    &:hover {
+      background: #ff4d4d; // hover qizil
+      color: #fff;
+    }
+
+    &.active {
+      background: #ff0000; // aktiv sahifa qizil
+      color: #fff;
+      font-weight: bold;
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      background: #660000; // disable holatda to‘q qizil
+      color: #aaa;
+    }
+  }
+}
+.profile-message {
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  background: #1c1c1c;
+  color: white;
+  padding: 12px 16px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  animation: fadeInOut 2.5s ease forwards;
+  z-index: 9999;
+
+  &.success {
+    border-left: 4px solid #22c55e;
+  }
+  &.error {
+    border-left: 4px solid #ef4444;
+  }
+
+  .msg-sticker {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateY(-15px); }
+  10%, 90% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-15px); }
+}
+
+@media screen and (max-width:500px) {
+  .profile-message{
+    top: 130px;
+  }
+  
+}

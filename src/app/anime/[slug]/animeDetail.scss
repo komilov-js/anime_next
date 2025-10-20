@@ -1,0 +1,637 @@
+.anime-detail {
+  min-height: 100vh;
+  padding: 2rem;
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.85) 0%, rgba(40, 40, 40, 0.85) 100%);
+    z-index: 1;
+  }
+
+  .anime-detail-container {
+    position: relative;
+    z-index: 2;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    align-items: start;
+
+    .ad-block {
+      width: 100%;
+    }
+
+    .anime-detail-text {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+      .anime-detail-text-text {
+        background: rgba(20, 20, 20, 0.92);
+        padding: 2rem;
+        border-radius: 8px;
+        border-left: 5px solid #f20114;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+      }
+
+      .anime-titles {
+        display: flex;
+        gap: 10px;
+      }
+
+      h1 {
+        color: #fff;
+        margin-bottom: 1rem;
+        font-size: 2.5rem;
+        font-weight: 700;
+        line-height: 1.2;
+        text-shadow: 0px 3px 8px rgba(0, 0, 0, 0.7);
+      }
+
+      p {
+        color: #ccc;
+        line-height: 1.6;
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .anime-meta {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        margin-top: 1.5rem;
+
+        .meta-item {
+          background: rgba(30, 30, 30, 0.9);
+          padding: 0.8rem;
+          border-radius: 4px;
+          border-left: 3px solid #333;
+          transition: all 0.3s ease;
+
+          &:hover {
+            border-left: 3px solid #f20114;
+          }
+
+          h3 {
+            color: #f20114;
+            margin: 0 0 0.3rem 0;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+          }
+
+          p {
+            color: #eee;
+            margin: 0;
+            font-size: 1rem;
+          }
+        }
+      }
+
+      /* ================= Like & Comment Section ================= */
+      .like-comments {
+        // margin: 20px 0 0 0;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        width: 100%;
+        background: rgba(25, 25, 25, 0.9);
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+        border-left: 5px solid #f20114;
+
+        .like-dislike {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 8px;
+          overflow: hidden;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+
+          div {
+            width: 100%;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.03);
+            transition: all 0.3s ease;
+            position: relative;
+
+            button {
+              all: unset;
+              cursor: pointer;
+              display: flex;
+              align-items: center;
+              gap: 10px;
+              color: #ced5dbff;
+              justify-content: center;
+
+              svg {
+                font-size: 20px;
+                transition: transform 0.2s ease, fill 0.2s ease;
+                fill: #ccc;
+              }
+            }
+
+            &:hover {
+              background: rgba(255, 255, 255, 0.1);
+            }
+
+            &.like:hover svg {
+              fill: #00d26a;
+            }
+
+            &.dis-like:hover svg {
+              fill: #ff4242;
+            }
+
+            &.active.like {
+              background: rgba(0, 210, 106, 0.2);
+              svg {
+                fill: #00d26a;
+              }
+            }
+
+            &.active.dis-like {
+              background: rgba(255, 66, 66, 0.2);
+              svg {
+                fill: #ff4242;
+              }
+            }
+
+            &:not(:last-child) {
+              border-right: 1px solid rgba(255, 255, 255, 0.1);
+            }
+          }
+        }
+
+        .comments-list {
+          max-height: 250px;
+          overflow-y: auto;
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          padding: 10px;
+          background: rgba(25, 25, 25, 0.9);
+          border-radius: 8px;
+
+          .comment-item {
+            background: rgba(35, 35, 35, 0.6);
+            padding: 8px 12px;
+            border-radius: 6px;
+            color: #eee;
+            font-size: 0.95rem;
+            line-height: 1.4;
+
+            b {
+              color: #f20114;
+              font-weight: 600;
+            }
+
+            p {
+              margin: 0;
+              color: #ddd;
+            }
+          }
+        }
+
+        .comment {
+          display: flex;
+          gap: 10px;
+          width: 100%;
+
+          .input-comment {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            background: rgba(25, 25, 25, 0.9);
+            border-radius: 12px;
+            padding: 6px 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+
+            input {
+              flex: 1;
+              background: transparent;
+              border: none;
+              outline: none;
+              color: #fff;
+              font-size: 15px;
+              padding: 6px 8px;
+              border-radius: 8px;
+
+              &::placeholder {
+                color: rgba(255, 255, 255, 0.4);
+              }
+            }
+
+            button.yuborish {
+              all: unset;
+              cursor: pointer;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              background: rgba(255, 255, 255, 0.05);
+              border-radius: 8px;
+              padding: 6px 10px;
+              transition: all 0.2s ease;
+              color: #ccc;
+
+              &:hover {
+                background: rgba(255, 255, 255, 0.1);
+                color: #f20114;
+                transform: scale(1.1);
+              }
+            }
+          }
+        }
+
+        /* Scroll bar style */
+        .comments-list::-webkit-scrollbar {
+          width: 6px;
+        }
+
+        .comments-list::-webkit-scrollbar-thumb {
+          background: rgba(242, 1, 20, 0.5);
+          border-radius: 3px;
+        }
+
+        .comments-list::-webkit-scrollbar-track {
+          background: rgba(0, 0, 0, 0.2);
+        }
+      }
+    }
+
+    .anime-video {
+      position: sticky;
+      top: 2rem;
+
+      .video-actions {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 18px 0;
+
+        a,
+        button {
+          flex: 1;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          padding: 12px 20px;
+          border: 1px solid rgba(255, 255, 255, 0.3);
+          border-radius: 8px;
+          background: rgba(31, 30, 30, 0.8);
+          color: white;
+          text-decoration: none;
+          font-size: 14px;
+          font-weight: 500;
+          cursor: pointer;
+          transition: all 0.3s ease;
+
+          &:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-1px);
+          }
+
+          i,
+          svg {
+            font-size: 16px;
+          }
+        }
+
+        @media screen and (max-width: 600px) {
+          flex-direction: column;
+          gap: 10px;
+
+          a,
+          button {
+            width: 100%;
+            padding: 14px 20px;
+          }
+        }
+      }
+
+      video,
+      iframe {
+        width: 100%;
+        border-radius: 8px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        aspect-ratio: 16/9;
+      }
+
+      p {
+        color: #fff;
+        font-size: 1.2rem;
+        background: rgba(30, 30, 30, 0.9);
+        padding: 2rem;
+        border-radius: 8px;
+        text-align: center;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      }
+
+      /* Seasons */
+      .season-list {
+        margin-top: 1.5rem;
+        background: rgba(20, 20, 20, 0.92);
+        padding: 1.5rem;
+        border-radius: 8px;
+
+        h3 {
+          color: #fff;
+          margin: 0 0 1rem;
+          text-align: center;
+          font-size: 1.3rem;
+          position: relative;
+          padding-bottom: 0.5rem;
+
+          &::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 2px;
+            background: #f20114;
+          }
+        }
+
+        .seasons {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 0.5rem;
+
+          .season {
+            background: rgba(113, 112, 112, 0.35);
+            color: #ddd;
+            text-align: center;
+            padding: 0.8rem 0.7rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+
+            &:hover {
+              color: #fff;
+              transform: translateY(-2px);
+              box-shadow: 0 3px 5px rgba(255, 255, 255, 0.3);
+            }
+
+            &.current {
+              background: #f20114;
+              color: #fff;
+              font-weight: bold;
+            }
+          }
+        }
+      }
+
+      /* Episodes */
+      .episode-list {
+        margin-top: 1.5rem;
+        background: rgba(20, 20, 20, 0.92);
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+
+        h3 {
+          color: #fff;
+          margin: 0 0 1rem;
+          text-align: center;
+          font-size: 1.3rem;
+          position: relative;
+          padding-bottom: 0.5rem;
+
+          &::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 2px;
+            background: #f20114;
+          }
+        }
+
+        .episodes {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 0.5rem;
+
+          .episode {
+            background: rgba(30, 30, 30, 0.9);
+            color: #ddd;
+            text-align: center;
+            padding: 0.7rem 0.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+
+            &:hover {
+              color: #fff;
+              transform: translateY(-2px);
+              box-shadow: 0 3px 8px rgba(242, 1, 20, 0.3);
+            }
+
+            &.current {
+              background: #f20114;
+              color: #fff;
+              font-weight: bold;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+/* ================= Responsive ================= */
+@media (max-width: 900px) {
+  .anime-detail {
+    padding: 1rem;
+    .anime-detail-container {
+      grid-template-columns: 1fr;
+      .anime-video {
+        position: static;
+      }
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .anime-detail {
+    padding: 1rem;
+
+    .anime-detail-container {
+      .ad-block {
+        display: none;
+      }
+
+      .anime-detail-text {
+        h1 {
+          font-size: 1.8rem;
+        }
+
+        p {
+          font-size: 1rem;
+        }
+
+        .anime-meta {
+          grid-template-columns: 1fr;
+        }
+
+        .like-comments {
+          flex-direction: column;
+          row-gap: 12px;
+        }
+      }
+
+      .anime-video {
+        .season-list .seasons,
+        .episode-list .episodes {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+    }
+  }
+}
+
+// Comment qismi uchun qo'shimcha stillar
+.like-comments {
+  // margin-top: 20px;
+  
+  .comment {
+    margin: 15px 0;
+    
+    .input-comment {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 5px;
+      
+      input {
+        flex: 1;
+        padding: 10px 15px;
+        border: 1px solid #ddd;
+        border-radius: 20px;
+        outline: none;
+        transition: border-color 0.3s;
+        
+        &:focus {
+          border-color: #007bff;
+        }
+      }
+      
+      .yuborish {
+        background: #007bff;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background 0.3s;
+        
+        &:hover:not(:disabled) {
+          background: #0056b3;
+        }
+        
+        &:disabled {
+          background: #6c757d;
+          cursor: not-allowed;
+        }
+        
+        .spinner {
+          width: 16px;
+          height: 16px;
+          border: 2px solid transparent;
+          border-top: 2px solid white;
+          border-radius: 50%;
+          animation: spin 1s linear infinite;
+        }
+      }
+    }
+    
+    .error {
+      color: #dc3545;
+      font-size: 14px;
+      margin: 5px 0;
+    }
+    
+    .comment-info {
+      display: flex;
+      justify-content: flex-end;
+      font-size: 12px;
+      color: #6c757d;
+    }
+  }
+  
+  .comments-list {
+    // margin-top: 20px;
+    
+    h3 {
+      margin-bottom: 15px;
+      color: #333;
+    }
+    
+    .no-comments {
+      text-align: center;
+      color: white;
+      font-style: italic;
+      padding: 20px;
+    }
+    
+    .comment-item {
+      background: #f8f9fa;
+      border-radius: 10px;
+      padding: 15px;
+      // margin-bottom: 15px;
+      
+      .comment-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+        
+        b {
+          color: #333;
+        }
+        
+        .comment-date {
+          font-size: 12px;
+          color: #6c757d;
+        }
+      }
+      
+      .comment-text {
+        color:white;
+        line-height: 1.4;
+      }
+    }
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

@@ -1,0 +1,371 @@
+// 🎨 Ranglar
+$primary: #f60012;
+$text: #111827;
+$light-bg: #f7f8fa;
+$light-bg-2: #f0f1f5;
+$dark-bg: #1a1a1a;
+$dark-card: #222;
+
+// 🔥 Profile Page
+.profile {
+  min-height: 100vh;
+  background: linear-gradient(135deg, $light-bg 0%, $light-bg-2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 40px 20px;
+  flex-direction: column;
+
+  // 🧑 Profile Info Box
+  .profile-container {
+    background: #fff;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    max-width: 700px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    
+      .qalam {
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #111;
+        position: relative;
+        top: 0;
+        padding: 5px;
+        border-radius: 100px;
+        background-color: #f60817;
+        cursor: pointer;
+        gap: 10px;
+        transition: 0.3s ease;
+        &:hover{
+          scale: 1.1;
+          .tahrir{
+            
+          }
+
+        }
+        
+        // opacity: 0;  
+        svg {
+          fill: white;
+          color: white;
+          width: 15px;
+          height: 15px;
+        }
+
+      }
+
+    .tahrir {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+    }
+
+    img.profile-img {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid $primary;
+      transition: transform 0.4s ease;
+
+
+      &:hover {
+        .tahrir {
+
+          .qalam {
+            opacity: 1;
+
+          }
+        }
+
+        transform: scale(1.05);
+      }
+    }
+
+    ul {
+      flex: 1;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+
+      li {
+        font-size: 16px;
+        padding: 10px 0;
+        border-bottom: 1px solid #eee;
+        color: $text;
+
+        strong {
+          color: $primary;
+          margin-right: 6px;
+        }
+
+        &:last-child {
+          border-bottom: none;
+        }
+      }
+    }
+
+    // 🚪 Logout Button
+    .anime-logout-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 18px;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, $primary, #ff3b3b);
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background: linear-gradient(135deg, #e00010, $primary);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 18px rgba($primary, 0.4);
+      }
+
+      &:active {
+        transform: translateY(0);
+        box-shadow: none;
+      }
+    }
+  }
+
+  // 📂 Saved Animes
+  .saved-animes {
+    margin-top: 50px;
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    h3 {
+      font-size: 26px;
+      font-weight: 700;
+      color: $text;
+      margin-bottom: 20px;
+    }
+
+    .anime-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 20px;
+
+      .page-anime-container {
+        .card-img {
+          position: relative;
+          border-radius: 12px;
+          overflow: hidden;
+          transition: all 0.4s ease;
+          cursor: pointer;
+
+          &:hover {
+            transform: translateY(-6px) scale(1.02);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+          }
+
+          img {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            transition: all 0.4s ease;
+          }
+
+          .card-text {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(52, 52, 52, 0.7);
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+          }
+
+          .image-text {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.3) 60%, transparent 100%);
+            color: #fff;
+            font-weight: 600;
+            font-size: 16px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            line-height: 1.2;
+
+            // ✂️ Text limit
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+          }
+
+          .card-icon {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+
+            &:hover {
+              transform: scale(1.15);
+            }
+
+            .heart-icon {
+              width: 20px;
+              height: 20px;
+              stroke-width: 2;
+              transition: all 0.3s ease;
+
+              &.favorite {
+                fill: $primary;
+                stroke: $primary;
+                animation: pulse 0.5s ease;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  // 🧃 Toast Xabar
+.toast {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100%);
+  background: #fff;
+  color: $text;
+  border-radius: 12px;
+  padding: 14px 26px;
+  font-weight: 600;
+  font-size: 15px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  transition: all 0.4s ease;
+  z-index: 9999;
+
+  &.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  &.success {
+    background: linear-gradient(135deg, #16a34a, #22c55e);
+    color: #fff;
+  }
+
+  &.error {
+    background: linear-gradient(135deg, #dc2626, #ef4444);
+    color: #fff;
+  }
+}
+
+
+  // ❤️ Heart Animation
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+    }
+
+    50% {
+      transform: scale(1.3);
+    }
+
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  // 📱 Responsive
+  @media (max-width: 768px) {
+    .page-anime-container {
+      width: 190px;
+      height: auto;
+    }
+
+    .profile-container {
+      flex-direction: column;
+      text-align: left;
+
+      img.profile-img {
+        width: 120px;
+        height: 120px;
+        object-fit: cover;
+      }
+    }
+
+    .saved-animes .anime-grid {
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+
+    .saved-animes .page-anime-container .card-img img {
+      height: 170px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .profile-container {
+      padding: 20px;
+      // display: flex !important;
+      gap: 15px;
+
+      img.profile-img {
+        width: 100px;
+        height: 100px;
+      }
+    }
+
+    .page-anime-container {
+      .card-img {
+        width: 170px;
+        height: 220px;
+        object-fit: cover;
+      }
+    }
+
+    .saved-animes h3 {
+      font-size: 20px;
+    }
+  }
+}
+
+// 🌙 Dark Mode
+body.dark {
+  .profile {
+    background: linear-gradient(135deg, $dark-bg, #111);
+    color: #fff;
+
+    .profile-container {
+      background: $dark-card;
+      color: #fff;
+
+      li {
+        border-color: rgba(255, 255, 255, 0.1);
+      }
+    }
+
+    .saved-animes h3 {
+      color: #fff;
+    }
+  }
+}

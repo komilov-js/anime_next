@@ -1,0 +1,21 @@
+.loader-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh; // ekranning ortasida chiqishi uchun
+//   background: #111; 
+}
+
+.loader {
+  width: 60px;
+  height: 60px;
+  border: 6px solid rgba(255, 0, 0, 0.3); // qizil soyasi
+  border-top: 6px solid #ff0000; // asosiy qizil rang
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

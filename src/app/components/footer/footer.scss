@@ -1,0 +1,156 @@
+// Ranglar — kerak bo'lsa o'zgartir
+$bg-gradient-start: #0f1724;
+$bg-gradient-end: #111827;
+$card-bg: #0b1220;
+$muted: #a8b0be;
+$accent: #f60012;
+$link-underline: rgba(255,255,255,0.06);
+
+.footer-container {
+  background: #101010;
+
+  .ad-block-3 {
+    width: 100%;
+  }
+}
+
+.site-footer {
+  color: #e6eef8;
+  padding: 48px 20px 24px;
+  font-family: Inter, "Helvetica Neue", Arial, sans-serif;
+
+  .footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.6fr 1fr 1fr;
+    gap: 40px;
+    align-items: start;
+  }
+
+  .footer-title {
+    font-size: 18px;
+    margin: 0 0 12px;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .footer-about {
+    p {
+      color: $muted;
+      line-height: 1.6;
+      margin: 0 0 12px;
+      font-size: 14px;
+    }
+
+    .disclaimer {
+      background: rgba(255,255,255,0.02);
+      padding: 12px;
+      border-left: 3px solid $accent;
+      border-radius: 6px;
+      margin-top: 8px;
+      a{
+        color: red;
+      }
+    }
+
+    .contact {
+      display: flex;
+      gap: 12px;
+      margin-top: 12px;
+      align-items: center;
+
+      a {
+        display: inline-flex;
+        gap: 8px;
+        align-items: center;
+        text-decoration: none;
+        color: #fff;
+        font-weight: 600;
+        background: rgba(255,255,255,0.03);
+        padding: 8px 12px;
+        border-radius: 8px;
+        transition: transform .18s ease, box-shadow .18s ease;
+
+        svg {
+          fill: #fff;
+          opacity: 0.95;
+        }
+
+        &:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+        }
+      }
+
+      .mail-link {
+        background: transparent;
+        padding: 0;
+        font-weight: 500;
+        color: $muted;
+      }
+    }
+  }
+
+  .footer-links, .footer-info {
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+
+      li {
+        margin-bottom: 10px;
+        a {
+          color: $muted;
+          text-decoration: none;
+          font-size: 14px;
+          padding-bottom: 4px;
+          border-bottom: 1px solid transparent;
+          transition: color .15s ease, border-color .15s ease;
+
+          &:hover {
+            color: #fff;
+            border-color: $link-underline;
+          }
+        }
+
+        strong { color: #fff; font-weight: 600; }
+      }
+    }
+  }
+
+  .footer-bottom {
+    border-top: 1px solid rgba(255,255,255,0.03);
+    margin-top: 28px;
+    padding-top: 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+
+    p { margin: 0; color: $muted; font-size: 13px; }
+
+    .small { opacity: 0.9; font-size: 12px; }
+  }
+
+  // Responsive
+  @media (max-width: 900px) {
+    .footer-inner {
+      grid-template-columns: 1fr;
+    }
+
+    .footer-bottom {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+    }
+  }
+
+  // Light dark tweak if your app toggles body.dark
+  body.dark & {
+    .footer-inner {
+      // subtle change if you want
+    }
+  }
+}
