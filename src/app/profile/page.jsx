@@ -33,10 +33,10 @@ const Profile = () => {
     useEffect(() => {
         const getProfileData = async () => {
             try {
-                const profileData = await fetchWithAuth("http://127.0.0.1:8000/api/users/me/");
+                const profileData = await fetchWithAuth("https://api.anivibe.uz/api/users/me/");
                 setProfile(profileData);
 
-                const savedData = await fetchWithAuth("http://127.0.0.1:8000/api/saved-animes/");
+                const savedData = await fetchWithAuth("https://api.anivibe.uz/api/saved-animes/");
                 if (Array.isArray(savedData)) setSavedAnimes(savedData);
                 else if (savedData?.results) setSavedAnimes(savedData.results);
                 else setSavedAnimes([]);
@@ -89,7 +89,7 @@ const Profile = () => {
     // ❌ O‘chirish funksiyasi (slug orqali)
     const handleUnsave = async (slug) => {
         try {
-            const res = await fetchWithAuth(`http://127.0.0.1:8000/api/saved-animes/${slug}/`, {
+            const res = await fetchWithAuth(`https://api.anivibe.uz/api/saved-animes/${slug}/`, {
                 method: "DELETE",
             });
 

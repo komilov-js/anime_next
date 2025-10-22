@@ -41,7 +41,7 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const res = await fetch("http://127.0.0.1:8000/api/users/login/", {
+      const res = await fetch("https://api.anivibe.uz/api/users/login/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -62,7 +62,7 @@ export default function LoginPage() {
       localStorage.setItem("access", data.access);
       localStorage.setItem("refresh", data.refresh);
 
-      const profileRes = await fetch("http://127.0.0.1:8000/api/users/me", {
+      const profileRes = await fetch("https://api.anivibe.uz/api/users/me", {
         headers: { Authorization: `Bearer ${data.access}` },
       });
 

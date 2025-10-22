@@ -4,7 +4,7 @@ export async function generateMetadata({ params }) {
   const { slug } = params;
 
   try {
-    const res = await fetch(`http://127.0.0.1:8000/api/animes/${slug}/`, {
+    const res = await fetch(`https://api.anivibe.uz/api/animes/${slug}/`, {
       next: { revalidate: 3600 }, // 1 soatda yangilansin
     });
 

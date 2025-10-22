@@ -115,7 +115,7 @@ export default function AnimeDetail() {
   const fetchLikeStats = async (animeSlug) => {
     try {
       console.log("📊 Like statistikasini olish...");
-      const response = await fetchWithCounter(`http://127.0.0.1:8000/api/animes/${animeSlug}/likes/`);
+      const response = await fetchWithCounter(`https://api.anivibe.uz/api/animes/${animeSlug}/likes/`);
       const data = await response.json();
 
       setLikesCount(data.likes_count || 0);
@@ -134,7 +134,7 @@ export default function AnimeDetail() {
 
     try {
       console.log("👤 Foydalanuvchi like holatini tekshirish...");
-      const response = await fetchWithAuthAndCounter(`http://127.0.0.1:8000/api/animes/${animeSlug}/like-status/`);
+      const response = await fetchWithAuthAndCounter(`https://api.anivibe.uz/api/animes/${animeSlug}/like-status/`);
 
       if (response && response.status !== undefined) {
         setLikeStatus(response.status);
@@ -155,7 +155,7 @@ export default function AnimeDetail() {
     const fetchAnime = async () => {
       try {
         console.log("🎬 Anime ma'lumotlarini yuklash boshlandi...");
-        const res = await fetchWithCounter(`http://127.0.0.1:8000/api/animes/${slug}/`);
+        const res = await fetchWithCounter(`https://api.anivibe.uz/api/animes/${slug}/`);
 
         const data = await res.json();
         setAnime(data);
@@ -180,7 +180,7 @@ export default function AnimeDetail() {
         if (user) {
           console.log("👤 Foydalanuvchi saqlagan animelarni tekshirish...");
           try {
-            const savedData = await fetchWithAuthAndCounter(`http://127.0.0.1:8000/api/saved-animes/`);
+            const savedData = await fetchWithAuthAndCounter(`https://api.anivibe.uz/api/saved-animes/`);
             setSaved(
               Array.isArray(savedData) && savedData.some((item) => item.anime?.slug === data.slug)
             );
@@ -219,7 +219,7 @@ export default function AnimeDetail() {
     setLoading(true);
     try {
       console.log("💬 Yangi izoh yuborilmoqda...");
-      const response = await fetchWithAuthAndCounter(`http://127.0.0.1:8000/api/comments/`, {
+      const response = await fetchWithAuthAndCounter(`https://api.anivibe.uz/api/comments/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -270,7 +270,7 @@ export default function AnimeDetail() {
       console.log(`👍 Like/Dislike yuborilmoqda: ${value}`);
       console.log(`📊 Joriy likeStatus: ${likeStatus}`);
 
-      const responseData = await likeWithAuthAndCounter(`http://127.0.0.1:8000/api/likes/`, {
+      const responseData = await likeWithAuthAndCounter(`https://api.anivibe.uz/api/likes/`, {
         method: "POST",
         body: JSON.stringify({
           anime_slug: anime.slug,
@@ -350,7 +350,7 @@ export default function AnimeDetail() {
     setSaveLoading(true);
     try {
       console.log("💾 Anime saqlanmoqda...");
-      await fetchWithAuthAndCounter(`http://127.0.0.1:8000/api/saved-animes/`, {
+      await fetchWithAuthAndCounter(`https://api.anivibe.uz/api/saved-animes/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ anime_slug: anime.slug }),

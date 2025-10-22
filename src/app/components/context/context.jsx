@@ -18,7 +18,7 @@ export const AuthProvider = ({ children }) => {
 
     const getUser = async () => {
       try {
-        const data = await fetchWithAuth("http://127.0.0.1:8000/api/users/me/");
+        const data = await fetchWithAuth("https://api.anivibe.uz/api/users/me/");
         if (data && !data.detail) {
           setUser(data);
         } else {

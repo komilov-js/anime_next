@@ -56,7 +56,7 @@ export default function RegisterPage() {
     setSuccess(false);
 
     try {
-      const res = await fetch("http://127.0.0.1:8000/api/users/register/", {
+      const res = await fetch("https://api.anivibe.uz/api/users/register/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -70,7 +70,7 @@ export default function RegisterPage() {
         return;
       }
 
-      const loginRes = await fetch("http://127.0.0.1:8000/api/users/login/", {
+      const loginRes = await fetch("https://api.anivibe.uz/api/users/login/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -90,7 +90,7 @@ export default function RegisterPage() {
       localStorage.setItem("access", tokens.access);
       localStorage.setItem("refresh", tokens.refresh);
 
-      const meRes = await fetch("http://127.0.0.1:8000/api/users/me/", {
+      const meRes = await fetch("https://api.anivibe.uz/api/users/me/", {
         headers: { Authorization: `Bearer ${tokens.access}` },
       });
 

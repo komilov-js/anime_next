@@ -29,7 +29,7 @@ const Nav = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await fetch("http://127.0.0.1:8000/api/categories/");
+        const res = await fetch("https://api.anivibe.uz/api/categories/");
         const data = await res.json();
         // 🔹 Agar data.results mavjud bo‘lmasa ham ishlaydi
         const list = Array.isArray(data.results) ? data.results : data;
@@ -51,7 +51,7 @@ const Nav = () => {
     const delayDebounce = setTimeout(async () => {
       try {
         const res = await fetch(
-          `http://127.0.0.1:8000/api/animes/?search=${encodeURIComponent(searchTerm)}`
+          `https://api.anivibe.uz/api/animes/?search=${encodeURIComponent(searchTerm)}`
         );
         const data = await res.json();
         // 🔹 Agar data.results mavjud bo‘lmasa ham ishlaydi

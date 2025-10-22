@@ -17,7 +17,7 @@ export const fetchWithAuth = async (url, options = {}) => {
   // agar access token muddati tugagan bo'lsa (401)
   if (response.status === 401 && refresh) {
     try {
-      let refreshRes = await fetch("http://127.0.0.1:8000/api/token/refresh/", {
+      let refreshRes = await fetch("https://api.anivibe.uz/api/token/refresh/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ refresh }),
@@ -76,7 +76,7 @@ export const likeWithAuth = async (url, options = {}) => {
   // agar access token muddati tugagan bo'lsa (401)
   if (response.status === 401 && refresh) {
     try {
-      let refreshRes = await fetch("http://127.0.0.1:8000/api/token/refresh/", {
+      let refreshRes = await fetch("https://api.anivibe.uz/api/token/refresh/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ refresh }),
