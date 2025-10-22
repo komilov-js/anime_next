@@ -13,29 +13,41 @@ const CategoryPage = () => {
   const [animes, setAnimes] = useState([]);
   const [favorites, setFavorites] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(
-    typeof window !== "undefined" && window.innerWidth <= 768 ? 12 : 15
-  );
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
   const [message, setMessage] = useState(null);
-  const [messageType, setMessageType] = useState("success");
-
   const { user } = useContext(AuthContext);
+
+  // 📱 Har bir sahifada necha ta chiqishini aniqlaymiz
+  const [itemsPerPage, setItemsPerPage] = useState(
+    typeof window !== "undefined" && window.innerWidth <= 768 ? 14 : 15
+  );
 
   useEffect(() => {
     const handleResize = () => {
-      setItemsPerPage(window.innerWidth <= 768 ? 12 : 15);
+      setItemsPerPage(window.innerWidth <= 768 ? 14 : 15);
     };
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  // 🎬 Anime fetch qilish (pagination bilan)
   useEffect(() => {
     const fetchAnimes = async () => {
       try {
-        const res = await fetch(`http://127.0.0.1:8000/api/animes/?category=${slug}`);
+        const res = await fetch(
+          `http://127.0.0.1:8000/api/pganimes/?category=${slug}&page=${currentPage}&page_size=${itemsPerPage}`
+        );
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+
         const data = await res.json();
-        setAnimes(data);
-        setCurrentPage(1);
+
+        setAnimes(data.results || []);
+        setTotalCount(data.count || 0);
+        setTotalPages(
+          data.results?.length ? Math.ceil(data.count / itemsPerPage) : 1
+        );
+
         window.scrollTo(0, 0);
       } catch (error) {
         console.error("Category animes fetch error:", error);
@@ -44,6 +56,7 @@ const CategoryPage = () => {
 
     fetchAnimes();
 
+    // ❤️ Foydalanuvchining saqlanganlari
     if (user) {
       fetchWithAuth("http://127.0.0.1:8000/api/saved-animes/")
         .then((res) => {
@@ -57,9 +70,9 @@ const CategoryPage = () => {
         })
         .catch((err) => console.error("Error fetching saved animes:", err));
     }
-  }, [slug, user]);
+  }, [slug, currentPage, user, itemsPerPage]); // 🔥 itemsPerPage ni ham kuzatamiz
 
-  // 🔔 Chiroyli xabar funksiyasi
+  // 🔔 Xabar chiqish
   const showMessage = (text, type, stickerType = false) => {
     setMessage({ text, type, stickerType });
     setTimeout(() => setMessage(null), 2500);
@@ -92,7 +105,7 @@ const CategoryPage = () => {
         } else {
           showMessage("O‘chirishda xatolik yuz berdi!", "error");
         }
-      } catch (err) {
+      } catch {
         showMessage("Server bilan aloqa uzildi!", "error");
       }
     } else {
@@ -109,7 +122,7 @@ const CategoryPage = () => {
         } else {
           showMessage("Saqlashda xatolik yuz berdi!", "error");
         }
-      } catch (err) {
+      } catch {
         showMessage("Server bilan aloqa uzildi!", "error");
       }
     }
@@ -134,6 +147,7 @@ const CategoryPage = () => {
     </svg>
   );
 
+  // 🌀 Loader
   if (!animes || animes.length === 0) {
     return (
       <div className="loader-container">
@@ -142,36 +156,15 @@ const CategoryPage = () => {
     );
   }
 
-  const totalPages = Math.ceil(animes.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const selectedAnimes = animes.slice(startIndex, startIndex + itemsPerPage);
-
-  const handlePageChange = (num) => {
-    setCurrentPage(num);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
   return (
     <div className="page-anime">
-      {/* 🔔 Chiroyli xabar chiqishi */}
-      {message && (
-        <div className={`profile-message ${message.type}`}>
-          {message.stickerType === "save" && (
-            <img src="/images/sticker.jpg" alt="Saved" className="msg-sticker" />
-          )}
-          {message.stickerType === "delete" && (
-            <img src="/images/stickers.jpg" alt="Deleted" className="msg-sticker" />
-          )}
-          <p>{message.text}</p>
-        </div>
-      )}
-
+      {/* 🔰 Kategoriya nomi + umumiy son */}
       <h2 className="category-title">
-        {slug.replace(/-/g, " ")} ({animes.length})
+        {slug.replace(/-/g, " ")} ({totalCount})
       </h2>
 
       <div className="anime-grid">
-        {selectedAnimes.map((item) => (
+        {animes.map((item) => (
           <div className="page-anime-container" key={item.id}>
             <Link href={`/anime/${item.slug}`}>
               <div className="card-img">
@@ -196,21 +189,28 @@ const CategoryPage = () => {
         ))}
       </div>
 
+      {/* 🔢 Pagination */}
       {totalPages > 1 && (
         <div className="pagination">
-          <button onClick={() => handlePageChange(Math.max(currentPage - 1, 1))} disabled={currentPage === 1}>
+          <button
+            onClick={() => setCurrentPage(Math.max(currentPage - 1, 1))}
+            disabled={currentPage === 1}
+          >
             &lt;
           </button>
           {Array.from({ length: totalPages }, (_, i) => i + 1).map((num) => (
             <button
               key={num}
               className={currentPage === num ? "active" : ""}
-              onClick={() => handlePageChange(num)}
+              onClick={() => setCurrentPage(num)}
             >
               {num}
             </button>
           ))}
-          <button onClick={() => handlePageChange(Math.min(currentPage + 1, totalPages))} disabled={currentPage === totalPages}>
+          <button
+            onClick={() => setCurrentPage(Math.min(currentPage + 1, totalPages))}
+            disabled={currentPage === totalPages}
+          >
             &gt;
           </button>
         </div>

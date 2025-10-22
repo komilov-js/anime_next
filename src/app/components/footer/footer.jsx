@@ -66,7 +66,7 @@ const Footer = () => {
           <div className="footer-links">
             <h4 className="footer-title">Tezkor havolalar</h4>
             <ul>
-              {categories.map((cat) => (
+              { categories && categories.results && categories.results.map((cat) => (
                 <li key={cat.id}>
                   <Link href={`/category/${cat.slug}`}>{cat.name}</Link>
                 </li>

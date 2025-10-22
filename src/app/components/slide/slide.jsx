@@ -16,7 +16,7 @@ const Slide = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch("http://127.0.0.1:8000/api/animes/", {
+        const res = await fetch("http://127.0.0.1:8000/api/animes/?page_size=5", {
           next: { revalidate: 60 },
         });
         const json = await res.json();

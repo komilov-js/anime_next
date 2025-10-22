@@ -10,16 +10,14 @@ const PageAnime = () => {
   const [animePage, setAnimePage] = useState([]);
   const [savedList, setSavedList] = useState([]);
   const [viewedList, setViewedList] = useState([]);
-  const [limit, setLimit] = useState(15);
+  const [limit, setLimit] = useState(15); // 🧩 default — kompyuter
   const { user } = useContext(AuthContext);
-
-  // 🔔 Xabar holati
   const [message, setMessage] = useState(null);
 
-  // ✅ Responsive limit
+  // ✅ Ekran o'lchamiga qarab limit o‘rnatish (kompyuter 15, telefon 14)
   useEffect(() => {
     const updateLimit = () => {
-      setLimit(window.innerWidth <= 768 ? 12 : 15);
+      setLimit(window.innerWidth <= 768 ? 14 : 15);
     };
     updateLimit();
     window.addEventListener("resize", updateLimit);
@@ -30,9 +28,10 @@ const PageAnime = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch("http://127.0.0.1:8000/api/animes/");
+        const res = await fetch(`http://127.0.0.1:8000/api/home-animes/`);
         const data = await res.json();
-        setAnimePage(data);
+        // 🔽 limit bo‘yicha kesamiz
+        setAnimePage(data.slice(0, limit));
       } catch (err) {
         console.error("Error fetching anime data:", err);
       }
@@ -50,15 +49,15 @@ const PageAnime = () => {
       }
     };
     fetchData();
-  }, [user]);
+  }, [user, limit]); // 🔁 limit o‘zgarsa qayta yuklanadi
 
-  // 🔔 Chiroyli xabar funksiyasi
+  // 🔔 Xabar funksiyasi
   const showMessage = (text, type, stickerType = false) => {
     setMessage({ text, type, stickerType });
     setTimeout(() => setMessage(null), 2500);
   };
 
-  // ✅ Saqlash / O‘chirish funksiyasi
+  // ❤️ Saqlash / O‘chirish
   const toggleSave = async (anime, e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -75,8 +74,6 @@ const PageAnime = () => {
       try {
         const res = await fetchWithAuth(`http://127.0.0.1:8000/api/saved-animes/${slug}/`, {
           method: "DELETE",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ anime_slug: slug }),
         });
 
         if (res.status === 204 || res.detail?.includes("o‘chirildi")) {
@@ -85,7 +82,7 @@ const PageAnime = () => {
         } else {
           showMessage("O‘chirishda xatolik yuz berdi!", "error");
         }
-      } catch (err) {
+      } catch {
         showMessage("Server bilan aloqa uzildi!", "error");
       }
     } else {
@@ -102,32 +99,31 @@ const PageAnime = () => {
         } else {
           showMessage("Saqlashda xatolik yuz berdi!", "error");
         }
-      } catch (err) {
+      } catch {
         showMessage("Server bilan aloqa uzildi!", "error");
       }
     }
   };
 
-  // ✅ Ko‘rilganini backendga yuborish
+  // 👁️ Ko‘rilgan anime’ni yuborish
   const handleView = async (anime) => {
     const slug = anime.slug;
     if (!user) return;
     if (viewedList.includes(slug)) return;
 
     try {
-      const res = await fetchWithAuth("http://127.0.0.1:8000/api/viewed-animes/", {
+      await fetchWithAuth("http://127.0.0.1:8000/api/viewed-animes/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ anime_slug: slug }),
       });
-      console.log("View sent:", res);
       setViewedList((prev) => [...prev, slug]);
     } catch (err) {
       console.error("Error sending view:", err);
     }
   };
 
-  // SVG icon
+  // 💾 Icon komponent
   const SaveIcon = ({ isSaved }) => (
     <svg
       width="24"
@@ -168,7 +164,7 @@ const PageAnime = () => {
       )}
 
       <div className="anime-grid">
-        {animePage.slice(0, limit).map((item) => {
+        {animePage.map((item) => {
           const isSaved = savedList.includes(item.slug);
           return (
             <div className="page-anime-container" key={item.slug}>
@@ -186,10 +182,7 @@ const PageAnime = () => {
                     alt={item.title}
                   />
                   <div className="image-text"><p>{item.title}</p></div>
-                  <div
-                    className="card-icon"
-                    onClick={(e) => toggleSave(item, e)}
-                  >
+                  <div className="card-icon" onClick={(e) => toggleSave(item, e)}>
                     <SaveIcon isSaved={isSaved} />
                   </div>
                 </div>

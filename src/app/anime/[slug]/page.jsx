@@ -459,7 +459,7 @@ export default function AnimeDetail() {
           </div>
 
           {/* Seasons */}
-          {anime.seasons?.length > 0 && (
+          {anime.seasons?.length > 1 && (
             <div className="season-list">
               <h3>Fasllar</h3>
               <div className="seasons">
