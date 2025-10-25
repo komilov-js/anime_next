@@ -1,0 +1,19 @@
+# robots.txt for https://www.anivibe.uz/
+# Created: 2025-10-25
+# Purpose: Allow search engines to index main pages while keeping private routes hidden
+
+User-agent: *
+Disallow: /admin/
+Disallow: /api/
+Disallow: /static/
+Disallow: /media/
+Disallow: /login
+Disallow: /register
+Disallow: /notifications
+Allow: /
+
+# Sitemap location
+Sitemap: https://www.anivibe.uz/sitemap.xml
+
+# Crawl delay to prevent overload (1 second)
+Crawl-delay: 1
