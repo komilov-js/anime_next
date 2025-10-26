@@ -5,16 +5,18 @@
   width: 100%;
   height: 10vh;
   padding: 0 30px;
-  background: #101010;
+  background: transparent; // 🔹 Dastlab shaffof bo‘ladi
   backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   position: sticky;
   top: 0;
   z-index: 100;
-  transition: background 0.3s ease;
-  font-family: "Libertinus Serif", serif;
-  font-weight: 400;
-  font-style: normal;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+
+  &.scrolled {
+    background: #101010; // 🔹 Scroll qilganda fon paydo bo‘ladi
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4); // 🔹 biroz soyasi chiqadi
+  }
 
   .logo {
     font-size: 1.8rem;
@@ -434,9 +436,11 @@
 
     .logo {
       font-size: 1.4rem;
-      .user-info{
+
+      .user-info {
         font-size: 10px;
       }
+
       img {
         width: 50px;
       }
@@ -444,9 +448,10 @@
 
     .nav-right-container {
       .nav-login-profile {
-        .user-info{
+        .user-info {
           font-size: 15px;
         }
+
         .profile-img {
           width: 38px;
           height: 38px;

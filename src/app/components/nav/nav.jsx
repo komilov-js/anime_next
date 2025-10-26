@@ -24,6 +24,21 @@ const Nav = () => {
     window.addEventListener("popstate", clearSearch);
     return () => window.removeEventListener("popstate", clearSearch);
   }, []);
+    // 🔳 Scroll bo‘lganda nav fonini o‘zgartirish
+  useEffect(() => {
+    const handleScroll = () => {
+      const nav = document.querySelector(".nav");
+      if (window.scrollY > 20) {
+        nav.classList.add("scrolled");
+      } else {
+        nav.classList.remove("scrolled");
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
 
   // 📂 Kategoriyalarni olish
   useEffect(() => {
