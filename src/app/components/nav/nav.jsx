@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { AuthContext } from "../context/context";
 import defImage from "./default.jpg";
+import { usePathname } from "next/navigation";
 
 const Nav = () => {
   const { user } = useContext(AuthContext);
@@ -14,6 +15,9 @@ const Nav = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
   const searchRef = useRef(null);
+
+  const pathname = usePathname();
+  const isHome = pathname === "/";
 
   // 🔄 Orqaga bosilganda qidiruvni tozalash
   useEffect(() => {
@@ -24,7 +28,7 @@ const Nav = () => {
     window.addEventListener("popstate", clearSearch);
     return () => window.removeEventListener("popstate", clearSearch);
   }, []);
-    // 🔳 Scroll bo‘lganda nav fonini o‘zgartirish
+  // 🔳 Scroll bo‘lganda nav fonini o‘zgartirish
   useEffect(() => {
     const handleScroll = () => {
       const nav = document.querySelector(".nav");
@@ -104,7 +108,7 @@ const Nav = () => {
 
   return (
     <>
-      <div className="nav">
+      <div className={`nav ${isHome ? "home-nav" : "black-nav"}`}>
         {/* 🔹 Logo */}
         <div className="logo">
           <Link href="/">

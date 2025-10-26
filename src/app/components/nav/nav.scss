@@ -5,7 +5,6 @@
   width: 100%;
   height: 10vh;
   padding: 0 30px;
-  background: transparent; // 🔹 Dastlab shaffof bo‘ladi
   backdrop-filter: blur(5px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   position: sticky;
@@ -13,11 +12,23 @@
   z-index: 100;
   transition: background 0.3s ease, box-shadow 0.3s ease;
 
-  &.scrolled {
-    background: #101010; // 🔹 Scroll qilganda fon paydo bo‘ladi
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4); // 🔹 biroz soyasi chiqadi
+  // 🏠 Faqat Home sahifada shaffof
+  &.home-nav {
+    background: transparent;
   }
 
+  // ⚫️ Qolgan sahifalarda qora
+  &.black-nav {
+    background: #000;
+  }
+
+  // 🔽 Scroll qilganda fon paydo bo‘ladi
+  &.scrolled {
+    background: #101010;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
+  }
+
+  // 🔹 Logo
   .logo {
     font-size: 1.8rem;
     font-weight: bold;
@@ -40,6 +51,7 @@
     }
   }
 
+  // 🔍 Qidiruv va menu
   .nav-menu-search {
     flex: 1;
     display: flex;
@@ -50,7 +62,6 @@
     #manga {
       text-decoration: none;
       color: white;
-
     }
 
     .search {
@@ -96,6 +107,7 @@
     }
   }
 
+  // 🔔 Profil va bildirishnomalar
   .nav-right-container {
     display: flex;
     align-items: center;
@@ -170,7 +182,6 @@
         box-shadow: 0 0 0 rgba(255, 0, 0, 0);
 
         &:hover {
-          // transform: scale(1.12) rotate(3deg);
           box-shadow: 0 0 18px rgba(255, 0, 0, 0.6),
             0 0 25px rgba(255, 0, 0, 0.3);
           border-color: #ff4545;
@@ -205,11 +216,10 @@
         }
       }
     }
-
   }
 }
 
-// 🔴 pulsatsiya effekti
+// 🔴 Pulsatsiya effekti
 @keyframes pulse {
   0% {
     transform: scale(0.9);
@@ -227,72 +237,7 @@
   }
 }
 
-/* 📱 RESPONSIVE */
-@media (max-width: 992px) {
-  .nav {
-    padding: 0 20px;
-
-    .nav-menu-search {
-      flex: unset;
-
-      .search {
-        input {
-          width: 120px;
-        }
-      }
-    }
-
-    .nav-right-container {
-      gap: 15px;
-
-      .nav-login-profile {
-        .sign-in-link {
-          padding: 6px 12px;
-          font-size: 14px;
-
-        }
-
-      }
-    }
-  }
-}
-
-@media (max-width: 900px) {
-  .nav {
-    flex-wrap: wrap; // elementlar pastga tushishiga ruxsat
-    height: auto;
-    padding: 15px;
-
-    .logo {
-      order: 1; // chap yuqori
-      margin-bottom: 0;
-    }
-
-    .nav-right-container {
-      order: 2; // o‘ng yuqori
-    }
-
-    .nav-menu-search {
-      order: 3; // pastga tushadi
-      width: 100%; // to‘liq kenglik
-      margin-top: 10px;
-
-      .search {
-        width: 100%;
-        justify-content: space-between;
-
-        input {
-          width: 100%;
-        }
-
-        .nav-menu {
-          // display: none; 
-        }
-      }
-    }
-  }
-}
-
+// 🔎 Qidiruv natijalari
 .search-results {
   position: fixed;
   left: 50%;
@@ -303,32 +248,20 @@
   gap: 12px;
   padding: 12px;
   width: 90%;
-  max-width: 1000px; // katta ekranlar uchun limit
-  background-color: rgba(51, 51, 51, 0.95); // biroz shaffof fon
+  max-width: 1000px;
+  background-color: rgba(51, 51, 51, 0.95);
   border-radius: 10px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-  overflow: hidden; // chiqib ketmasligi uchun
   max-height: 500px;
-  overflow-y: auto; // vertikal scroll
+  overflow-y: auto;
 
   &::-webkit-scrollbar {
-    width: 10px; // scroll kengligi
-  }
-
-  &::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.4);
-    border-radius: 10px;
+    width: 10px;
   }
 
   &::-webkit-scrollbar-thumb {
     background: linear-gradient(180deg, #f20114, #c50010);
     border-radius: 10px;
-    border: 2px solid rgba(51, 51, 51, 0.95); // fon bilan uyg‘unlashadi
-    transition: background 0.3s ease;
-  }
-
-  &::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(180deg, #ff2a36, #f20114); // hoverda yanada yorqin
   }
 
   a {
@@ -339,7 +272,7 @@
 
     &:hover {
       background-color: #555555;
-      transform: scale(1.02); // kichik o‘sish effekti
+      transform: scale(1.02);
     }
   }
 
@@ -348,27 +281,20 @@
     align-items: center;
     gap: 12px;
     padding: 10px;
-    color: #ffffff;
-    width: 100%;
-    transition: transform 0.3s ease;
+    color: #fff;
 
     img {
       width: 90px;
       height: 100px;
       object-fit: cover;
       border-radius: 6px;
-      flex-shrink: 0;
     }
 
     div {
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-
       h3 {
         font-size: 18px;
         font-weight: 600;
-        margin: 0 0 6px 0;
+        margin-bottom: 6px;
         white-space: nowrap;
         text-overflow: ellipsis;
         overflow: hidden;
@@ -377,36 +303,43 @@
       p {
         font-size: 14px;
         color: #ddd;
-        margin: 0;
-        display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
+        display: -webkit-box;
         overflow: hidden;
-        text-overflow: ellipsis;
       }
     }
   }
 }
 
-
-@media (max-width: 768px) {
+/* 📱 RESPONSIVE */
+@media (max-width: 992px) {
   .nav {
-    flex-wrap: wrap; // pastga tushishiga ruxsat beramiz
-    height: auto;
-    padding: 15px;
+    padding: 0 20px;
 
-    .logo {
-      order: 1; // chap yuqori
-      margin-bottom: 0;
+    .nav-menu-search .search input {
+      width: 150px;
     }
 
     .nav-right-container {
-      order: 2; // o‘ng yuqori
+      gap: 15px;
+
+      .nav-login-profile .sign-in-link {
+        padding: 6px 12px;
+        font-size: 13px;
+      }
     }
+  }
+}
+
+@media (max-width: 768px) {
+  .nav {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 15px;
 
     .nav-menu-search {
-      order: 3; // pastga tushadi
-      width: 100%; // to‘liq kenglik
+      width: 100%;
       margin-top: 10px;
 
       .search {
@@ -414,53 +347,29 @@
         justify-content: space-between;
 
         input {
-          width: 50%;
+          width: 60%;
         }
 
-        .nav-menu {
-
-          // display: none; 
-          a {
-            font-size: 10px;
-          }
+        .nav-menu a {
+          font-size: 12px;
         }
       }
     }
   }
 }
 
-
 @media (max-width: 480px) {
   .nav {
     padding: 10px;
 
-    .logo {
-      font-size: 1.4rem;
-
-      .user-info {
-        font-size: 10px;
-      }
-
-      img {
-        width: 50px;
-      }
+    .logo img {
+      width: 50px;
     }
 
-    .nav-right-container {
-      .nav-login-profile {
-        .user-info {
-          font-size: 15px;
-        }
-
-        .profile-img {
-          width: 38px;
-          height: 38px;
-        }
-
-        .sign-in-link {
-          font-size: 12px;
-          padding: 5px 10px;
-        }
+    .nav-right-container .nav-login-profile {
+      .sign-in-link {
+        font-size: 12px;
+        padding: 5px 10px;
       }
     }
   }
