@@ -7,7 +7,7 @@
   padding: 0 30px;
   backdrop-filter: blur(5px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  position: sticky;
+  position: fixed;
   top: 0;
   z-index: 100;
   transition: background 0.3s ease, box-shadow 0.3s ease;
