@@ -1,28 +1,24 @@
 .mySwiper {
-  width: 100%;
-  height: 100vh;
-  position: relative;
+    width: 100%;
+    height: 90vh;
+}
 
-  .slide-bg {
+.slide-bg {
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
     color: white;
-    height: 100vh;
-    width: 100%;
-    background-size: cover;
-    background-position: center;
-  }
+}
 
-  .overlay-swiper {
+.overlay-swiper {
     position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, 0.6);
+    background: rgba(0, 0, 0, 0.6); 
     z-index: 1;
-  }
+}
 
-  .slide-content {
+.slide-content {
     position: relative;
     z-index: 2;
     text-align: center;
@@ -30,153 +26,172 @@
     align-items: center;
     justify-content: space-around;
     width: 100%;
-    height: 100vh; // 🔥 har doim to‘liq ekran balandligida
 
     .slide-img {
-      img {
-        width: 300px;
-        height: 400px;
-        object-fit: cover;
-        border-radius: 10px;
-      }
+        img {
+            width: 300px;
+            height: 400px;
+            object-fit: cover;
+        }
     }
 
     .slide-text {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      text-align: left;
-      align-items: flex-start;
-
-      h1 {
-        font-size: 4rem;
-        max-width: 20ch;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-
-      .hd-whatch {
         display: flex;
-        align-items: center;
-        gap: 10px;
-      }
-
-      #HD {
-        border: 1px solid white;
-        font-size: 20px;
-        padding-left: 10px;
-        font-weight: 700;
-        display: inline-block;
-
-        span {
-          margin-left: 5px;
-          background-color: white;
-          padding: 5px;
-          color: black;
-        }
-      }
-
-      div {
-        display: flex;
-        align-items: center;
+        flex-direction: column;
         gap: 20px;
+        text-align: left;
+        align-items: start;
+        h1{
+                max-width: 20ch;
+                  white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
 
-        a {
-          border-radius: 6px;
-          color: white;
-          border: 1px solid white;
-          padding: 5px 20px;
-          text-decoration: none;
-          transition: 0.3s ease;
-          display: flex;
-          align-items: center;
-          gap: 10px;
-
-          svg {
-            width: 10px;
-          }
-
-          &:hover {
-            background-color: aliceblue;
-            color: black;
-          }
-        }
-      }
-
-      p {
-        max-width: 600px;
-        margin: 10px;
-        display: -webkit-box;
-        -webkit-line-clamp: 4;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-    }
-  }
-
-  .main-img {
-    width: 300px;
-    border-radius: 16px;
-  }
-
-  // 📱 Medium ekran uchun
-  @media screen and (max-width: 900px) {
-    .slide-content {
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      gap: 40px;
-
-      .slide-text {
-        align-items: center;
-      }
-    }
-  }
-
-  // 📱 Kichik ekran uchun
-  @media screen and (max-width: 600px) {
-    height: auto; // Swiper o‘zi balandlikni boshqaradi
-
-    .slide-bg {
-      height: auto;
-    }
-
-    .slide-content {
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 30px;
-      text-align: left;
-
-      .slide-text {
-        gap: 10px !important;
-
-        h1 {
-          font-size: 30px;
-          max-width: 15ch;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
         }
 
-        p {
-          font-size: 12px;
-          -webkit-line-clamp: 2;
+        .hd-whatch {
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         #HD {
-          display: none;
+            border: 1px solid white;
+            font-size: 20px;
+            padding-left: 10px;
+            font-weight: 700;
+            display: inline;
+            span {
+                    margin-left: 5px;
+                background-color: white;
+                padding: 5px;
+                color: black;
+            }
         }
-      }
 
-      .slide-img {
-        img {
-          display: none;
+        div {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+
+            a {
+                border-radius: 2px;
+                color: white;
+                border: 1px solid white;
+                padding: 5px 20px;
+                text-decoration: none;
+                transition: 0.3s ease;
+                display: flex;
+                border-radius: 6px;
+                align-items: center;
+                gap: 10px;
+
+                svg {
+                    width: 10px;
+                }
+
+                &:hover {
+                    background-color: aliceblue;
+                    color: black;
+                }
+            }
         }
-      }
     }
-  }
+
+    h1 {
+        font-size: 4rem;
+        margin-top: 20px;
+    }
+
+    p {
+        max-width: 600px;
+        margin: 10px;
+        display: -webkit-box; // Flexbox o‘rniga ishlatiladi
+        -webkit-line-clamp: 4; // 4 qator bilan cheklash
+        -webkit-box-orient: vertical; // qatorlarni vertikal yo‘nalishda
+        overflow: hidden; // ortiqcha matn yashiriladi
+        text-overflow: ellipsis;
+    }
+}
+
+
+.main-img {
+    width: 300px;
+
+    border-radius: 16px;
+}
+
+@media screen and (max-width:900px) {
+    .slide-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        // text-align: center;
+        gap: 40px;
+
+        .slide-text {
+            // text-align: center;
+            // align-items: center;
+        }
+    }
+
+}
+
+@media screen and (max-width:600px) {
+    .mySwiper {
+        width: 100%;
+        height: auto;
+        // display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .slide-bg {
+            width: 100%;
+            height: auto !important;
+            object-fit: cover;
+            text-align: left;
+        }
+
+    }
+
+    .slide-content {
+        align-items: center;
+        display: flex;
+        // text-align: left !important;
+
+        .slide-text {
+            gap: 10px !important;
+            padding: 30px;
+            // text-align: left !important;
+
+            h1 {
+                font-size: 30px;
+                max-width: 15ch;
+                /* 12 ta harf joyi */
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+
+            p {
+                font-size: 12px;
+                -webkit-line-clamp: 2;
+            }
+
+            #HD {
+                display: none;
+            }
+        }
+    }
+
+    .slide-img {
+        img {
+            // width: 200px !important;
+            // height: 300px !important;
+            // object-fit: cover;
+            display: none;
+        }
+    }
+
 }

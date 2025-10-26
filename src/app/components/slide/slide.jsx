@@ -62,7 +62,7 @@ const Slide = () => {
                 backgroundSize: "cover",
                 backgroundPosition: "center",
                 width: "100%",
-                height: "100vh",
+                height: "90vh",
                 position: "relative",
               }}
             >
