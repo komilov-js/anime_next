@@ -1,6 +1,7 @@
 // import { global_api_ssr } from "@/app/_app";
 
 export const revalidate = 3600; // 1 soatda bir yangilanish
+const global_api_ssr = 'https://api.anivibe.uz';
 
 const baseUrl = 'https://anivibe.uz';
 const apiBaseUrl = 'https://api.anivibe.uz';
