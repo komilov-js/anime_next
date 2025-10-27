@@ -1,93 +1,139 @@
+import { global_api_ssr } from "@/app/_app";
+
 export const revalidate = 3600; // 1 soatda bir yangilanish
 
 const baseUrl = 'https://anivibe.uz';
-const apiUrl = 'https://api.anivibe.uz/api'; // 🔹 API base (animes endpoint shu yerga keladi)
 
 const formatUrlString = (name) => {
-  return name
-    ? name.toLowerCase().replace(/'/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "")
-    : "";
+    return name
+        .toLowerCase()
+        .replace(/'/g, "")             // faqat apostrof belgilarini olib tashlaydi
+        .replace(/[^a-z0-9]+/g, "-")   // qolgan belgilarni bitta "-" ga almashtiradi
+        .replace(/^-+|-+$/g, "");      // boshida/oxiridagi "-" larni olib tashlaydi
 };
 
 async function fetchData(endpoint) {
-  try {
-    const res = await fetch(`${apiUrl}/${endpoint}`, {
-      cache: 'no-store',
-      headers: { 'Content-Type': 'application/json' },
-    });
-
-    if (!res.ok) {
-      const text = await res.text().catch(() => "");
-      throw new Error(`${endpoint} yuklanmadi. Status: ${res.status}. ${text}`);
+    try {
+        const res = await fetch(`${global_api_ssr}/${endpoint}`, { 
+            cache: 'no-store',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+        
+        if (!res.ok) {
+            const errorText = await res.text();
+            throw new Error(`${endpoint} yuklanmadi. Status: ${res.status}`);
+        }
+        
+        const data = await res.json();
+        return data;
+    } catch (error) {
+        console.error(`${endpoint} fetch error:`, error);
+        throw error;
     }
-
-    return await res.json();
-  } catch (error) {
-    console.error(`Fetch xatolik: ${endpoint}`, error);
-    return null;
-  }
 }
 
 export default async function sitemap() {
-  const staticPages = [
-    { url: baseUrl, lastModified: new Date('2025-01-13'), changeFrequency: 'daily', priority: 1 },
-    { url: `${baseUrl}/api/animes`, lastModified: new Date('2025-02-03'), changeFrequency: 'weekly', priority: 0.9 },
-    { url: `${baseUrl}/search`, lastModified: new Date(), changeFrequency: 'daily', priority: 0.7 },
-  ];
+    // Statik sahifalar
+    const staticPages = [
+        { 
+            url: baseUrl, 
+            lastModified: new Date(), 
+            changeFrequency: 'daily', 
+            priority: 1 
+        },
+        { 
+            url: `${baseUrl}/barcha-animelar`, 
+            lastModified: new Date(), 
+            changeFrequency: 'weekly', 
+            priority: 0.9 
+        },
+        {
+            url: `${baseUrl}/search`,
+            lastModified: new Date(),
+            changeFrequency: 'daily',
+            priority: 0.7,
+        },
+    ];
 
-  try {
-    // animes endpointdan ma'lumot olamiz
-    const animesResponse = await fetchData('animes');
-    // departments endpoint (agar mavjud bo'lsa) — kerak bo'lsa ishlatamiz
-    const departmentsResponse = await fetchData('departments');
-
-    // Endpoint null yoki notog'ri qaytsa, bo'sh array qilib olamiz
-    const animes = Array.isArray(animesResponse) ? animesResponse : (animesResponse?.data || []);
-    const departments = departmentsResponse?.data || [];
-
-    // Anime (film) sahifalari
-    const animePages = animes.map(item => {
-      // category ichidan birinchi elementning slug yoki "boshqa"
-      const categorySlug = item?.category?.[0]?.slug || item?.category?.[0]?.name || "boshqa";
-      // agar item.slug mavjud bo'lsa undan; yo'q bo'lsa formatlangan nomdan foydalanish
-      const slug = item?.slug || formatUrlString(item?.title || item?.movies_name || "");
-      return {
-        url: `${baseUrl}/${formatUrlString(categorySlug)}/${item.id}/${slug}`,
-        lastModified: new Date(item.created_at || new Date()),
-        changeFrequency: 'weekly',
-        priority: 0.8,
-      };
-    });
-
-    // Departments sahifalari (agar kerak bo'lsa)
-    const departmentPages = departments.map(dep => ({
-      url: `${baseUrl}/${dep.department_id}/${formatUrlString(dep.department_name || "")}`,
-      lastModified: new Date(dep.created_at || "2024-12-30T20:26:26.922678Z"),
-      changeFrequency: 'weekly',
-      priority: 0.7,
-    }));
-
-    // Har bir anime ichidagi season va episode sahifalari
-    const episodePages = animes.flatMap(item =>
-      (item.seasons || []).flatMap(season =>
-        (season.episodes || []).map(ep => {
-          const animeSlug = item?.slug || formatUrlString(item?.title || "");
-          const seasonNum = season?.season_number ?? season?.id ?? 1;
-          const epNum = ep?.episode_number ?? ep?.id;
-          return {
-            url: `${baseUrl}/${formatUrlString(item?.category?.[0]?.slug || "boshqa")}/${item.id}/${animeSlug}/season-${seasonNum}/episode-${epNum}`,
-            lastModified: new Date(ep.created_at || season.created_at || item.created_at || new Date()),
+    try {
+        // Anime ma'lumotlarini olish
+        const animesResponse = await fetchData('api/animes/');
+        
+        // Anime sahifalari
+        const animePages = animesResponse.map(anime => ({
+            url: `${baseUrl}/anime/${anime.id}/${formatUrlString(anime.slug || anime.title)}`,
+            lastModified: new Date(anime.created_at || new Date()),
             changeFrequency: 'weekly',
-            priority: 0.6,
-          };
-        })
-      )
-    );
+            priority: 0.8,
+        }));
 
-    const allPages = [...staticPages, ...animePages, ...departmentPages, ...episodePages];
-    return allPages;
-  } catch (error) {
-    console.error('Sitemap yaratishda xatolik:', error);
-    return staticPages;
-  }
+        // Kategoriya sahifalari (agar kategoriyalar alohida API bo'lsa)
+        let categoryPages = [];
+        try {
+            // Agar kategoriyalar alohida API bo'lsa
+            const categoriesResponse = await fetchData('api/categories/');
+            categoryPages = categoriesResponse.map(category => ({
+                url: `${baseUrl}/category/${category.id}/${formatUrlString(category.slug || category.name)}`,
+                lastModified: new Date(),
+                changeFrequency: 'weekly',
+                priority: 0.7,
+            }));
+        } catch (error) {
+            console.error('Categories fetch error:', error);
+            // Agar kategoriyalar API bo'lmasa, animelardan kategoriyalarni olish
+            const categories = new Set();
+            animesResponse.forEach(anime => {
+                if (anime.category && Array.isArray(anime.category)) {
+                    anime.category.forEach(cat => {
+                        categories.add(JSON.stringify(cat));
+                    });
+                }
+            });
+            
+            categoryPages = Array.from(categories).map(catStr => {
+                const cat = JSON.parse(catStr);
+                return {
+                    url: `${baseUrl}/category/${cat.id}/${formatUrlString(cat.slug || cat.name)}`,
+                    lastModified: new Date(),
+                    changeFrequency: 'weekly',
+                    priority: 0.7,
+                };
+            });
+        }
+
+        // Epizod sahifalari (har bir epizod uchun)
+        const episodePages = [];
+        animesResponse.forEach(anime => {
+            if (anime.seasons && Array.isArray(anime.seasons)) {
+                anime.seasons.forEach(season => {
+                    if (season.episodes && Array.isArray(season.episodes)) {
+                        season.episodes.forEach(episode => {
+                            episodePages.push({
+                                url: `${baseUrl}/anime/${anime.id}/${formatUrlString(anime.slug || anime.title)}/season/${season.season_number}/episode/${episode.episode_number}`,
+                                lastModified: new Date(episode.created_at || new Date()),
+                                changeFrequency: 'monthly',
+                                priority: 0.6,
+                            });
+                        });
+                    }
+                });
+            }
+        });
+
+        const allPages = [
+            ...staticPages, 
+            ...animePages, 
+            ...categoryPages, 
+            ...episodePages
+        ];
+
+        console.log(`Sitemap yaratildi: ${allPages.length} ta sahifa`);
+        return allPages;
+
+    } catch (error) {
+        console.error('Sitemap yaratishda xatolik:', error);
+        return staticPages;
+    }
 }
