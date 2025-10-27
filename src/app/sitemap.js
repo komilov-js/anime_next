@@ -3,34 +3,42 @@
 export const revalidate = 3600; // 1 soatda bir yangilanish
 
 const baseUrl = 'https://anivibe.uz';
-const apiBaseUrl = 'https://api.anivibe.uz'; // API asosiy URL ni qo'shdim
+const apiBaseUrl = 'https://api.anivibe.uz';
 
 const formatUrlString = (name) => {
+    if (!name) return '';
     return name
         .toLowerCase()
-        .replace(/'/g, "")             // faqat apostrof belgilarini olib tashlaydi
-        .replace(/[^a-z0-9]+/g, "-")   // qolgan belgilarni bitta "-" ga almashtiradi
-        .replace(/^-+|-+$/g, "");      // boshida/oxiridagi "-" larni olib tashlaydi
+        .replace(/'/g, "")
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "");
 };
 
 async function fetchData(endpoint) {
     try {
-        const res = await fetch(`${apiBaseUrl}/${endpoint}`, { // global_api_ssr o'rniga apiBaseUrl ishlatildi
+        const apiUrl = `${apiBaseUrl}/${endpoint}`;
+        console.log(`Fetching: ${apiUrl}`);
+        
+        const res = await fetch(apiUrl, {
             cache: 'no-store',
             headers: {
                 'Content-Type': 'application/json',
             }
         });
         
+        console.log(`Response status: ${res.status} for ${endpoint}`);
+        
         if (!res.ok) {
             const errorText = await res.text();
+            console.error(`API Error ${res.status}: ${errorText}`);
             throw new Error(`${endpoint} yuklanmadi. Status: ${res.status}`);
         }
         
         const data = await res.json();
+        console.log(`Successfully fetched ${endpoint}, data length:`, Array.isArray(data) ? data.length : 'not array');
         return data;
     } catch (error) {
-        console.error(`${endpoint} fetch error:`, error);
+        console.error(`${endpoint} fetch error:`, error.message);
         throw error;
     }
 }
@@ -45,50 +53,58 @@ export default async function sitemap() {
             priority: 1 
         },
         { 
-            url: `${baseUrl}/barcha-animelar`, // /api/animes o'rniga /barcha-animelar
+            url: `${baseUrl}/barcha-animelar`,
             lastModified: new Date(), 
             changeFrequency: 'weekly', 
             priority: 0.9 
         },
-        // {
-        //     url: `${baseUrl}/search`,
-        //     lastModified: new Date(),
-        //     changeFrequency: 'daily',
-        //     priority: 0.7,
-        // },
     ];
 
     try {
+        console.log('Starting sitemap generation...');
+        
         // Anime ma'lumotlarini olish
         const animesResponse = await fetchData('api/animes/');
+        console.log('Animes response:', animesResponse);
         
-        // Anime sahifalari
-        const animePages = animesResponse.map(anime => ({
-            url: `${baseUrl}/anime/${anime.id}/${formatUrlString(anime.slug || anime.title)}`,
-            lastModified: new Date(anime.created_at || new Date()),
-            changeFrequency: 'weekly',
-            priority: 0.8,
-        }));
+        // Agar ma'lumotlar massiv bo'lmasa
+        const animes = Array.isArray(animesResponse) ? animesResponse : [];
+        console.log(`Processing ${animes.length} animes`);
 
-        // Kategoriya sahifalari (agar kategoriyalar alohida API bo'lsa)
+        // Anime sahifalari
+        const animePages = animes.map(anime => {
+            const slug = formatUrlString(anime.slug || anime.title);
+            return {
+                url: `${baseUrl}/anime/${anime.id}/${slug}`,
+                lastModified: new Date(anime.created_at || new Date()),
+                changeFrequency: 'weekly',
+                priority: 0.8,
+            };
+        });
+
+        console.log(`Created ${animePages.length} anime pages`);
+
+        // Kategoriya sahifalari
         let categoryPages = [];
         try {
-            // Agar kategoriyalar alohida API bo'lsa
             const categoriesResponse = await fetchData('api/categories/');
-            categoryPages = categoriesResponse.map(category => ({
+            const categories = Array.isArray(categoriesResponse) ? categoriesResponse : [];
+            categoryPages = categories.map(category => ({
                 url: `${baseUrl}/category/${category.id}/${formatUrlString(category.slug || category.name)}`,
                 lastModified: new Date(),
                 changeFrequency: 'weekly',
                 priority: 0.7,
             }));
+            console.log(`Created ${categoryPages.length} category pages from API`);
         } catch (error) {
-            console.error('Categories fetch error:', error);
-            // Agar kategoriyalar API bo'lmasa, animelardan kategoriyalarni olish
+            console.log('Falling back to categories from animes data');
             const categories = new Set();
-            animesResponse.forEach(anime => {
+            animes.forEach(anime => {
                 if (anime.category && Array.isArray(anime.category)) {
                     anime.category.forEach(cat => {
-                        categories.add(JSON.stringify(cat));
+                        if (cat && cat.id && cat.name) {
+                            categories.add(JSON.stringify(cat));
+                        }
                     });
                 }
             });
@@ -102,17 +118,19 @@ export default async function sitemap() {
                     priority: 0.7,
                 };
             });
+            console.log(`Created ${categoryPages.length} category pages from animes`);
         }
 
-        // Epizod sahifalari (har bir epizod uchun)
+        // Epizod sahifalari
         const episodePages = [];
-        animesResponse.forEach(anime => {
+        animes.forEach(anime => {
             if (anime.seasons && Array.isArray(anime.seasons)) {
                 anime.seasons.forEach(season => {
                     if (season.episodes && Array.isArray(season.episodes)) {
                         season.episodes.forEach(episode => {
+                            const animeSlug = formatUrlString(anime.slug || anime.title);
                             episodePages.push({
-                                url: `${baseUrl}/anime/${anime.id}/${formatUrlString(anime.slug || anime.title)}/season/${season.season_number}/episode/${episode.episode_number}`,
+                                url: `${baseUrl}/anime/${anime.id}/${animeSlug}/season/${season.season_number}/episode/${episode.episode_number}`,
                                 lastModified: new Date(episode.created_at || new Date()),
                                 changeFrequency: 'monthly',
                                 priority: 0.6,
@@ -122,6 +140,8 @@ export default async function sitemap() {
                 });
             }
         });
+
+        console.log(`Created ${episodePages.length} episode pages`);
 
         const allPages = [
             ...staticPages, 
@@ -135,6 +155,7 @@ export default async function sitemap() {
 
     } catch (error) {
         console.error('Sitemap yaratishda xatolik:', error);
+        console.error('Error stack:', error.stack);
         return staticPages;
     }
 }
