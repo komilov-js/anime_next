@@ -31,7 +31,7 @@ async function fetchData(endpoint) {
 export default async function sitemap() {
   const staticPages = [
     { url: baseUrl, lastModified: new Date('2025-01-13'), changeFrequency: 'daily', priority: 1 },
-    { url: `${baseUrl}/barcha-filmlar`, lastModified: new Date('2025-02-03'), changeFrequency: 'weekly', priority: 0.9 },
+    { url: `${baseUrl}/api/animes`, lastModified: new Date('2025-02-03'), changeFrequency: 'weekly', priority: 0.9 },
     { url: `${baseUrl}/search`, lastModified: new Date(), changeFrequency: 'daily', priority: 0.7 },
   ];
 
