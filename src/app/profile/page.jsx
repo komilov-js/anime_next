@@ -124,7 +124,7 @@ const Profile = () => {
                         className="profile-img"
                         src={
                             profile?.profile_img
-                                ? `http://127.0.0.1:8000${profile.profile_img}`
+                                ? `http://api.anivibe.uz${profile.profile_img}`
                                 : defImg
                         }
                         alt={profile?.username || "Profile image"}

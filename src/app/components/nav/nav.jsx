@@ -149,7 +149,7 @@ const Nav = () => {
                   className="profile-img"
                   src={
                     user.profile_img
-                      ? `http://127.0.0.1:8000${user.profile_img}`
+                      ? `http://api.anivibe.uz${user.profile_img}`
                       : defImage
                   }
                   alt={user.username || "user"}
