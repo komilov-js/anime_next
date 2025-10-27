@@ -3,6 +3,7 @@
 export const revalidate = 3600; // 1 soatda bir yangilanish
 
 const baseUrl = 'https://anivibe.uz';
+const apiBaseUrl = 'https://api.anivibe.uz'; // API asosiy URL ni qo'shdim
 
 const formatUrlString = (name) => {
     return name
@@ -14,7 +15,7 @@ const formatUrlString = (name) => {
 
 async function fetchData(endpoint) {
     try {
-        const res = await fetch(`${global_api_ssr}/${endpoint}`, { 
+        const res = await fetch(`${apiBaseUrl}/${endpoint}`, { // global_api_ssr o'rniga apiBaseUrl ishlatildi
             cache: 'no-store',
             headers: {
                 'Content-Type': 'application/json',
@@ -44,17 +45,17 @@ export default async function sitemap() {
             priority: 1 
         },
         { 
-            url: `${baseUrl}/barcha-animelar`, 
+            url: `${baseUrl}/barcha-animelar`, // /api/animes o'rniga /barcha-animelar
             lastModified: new Date(), 
             changeFrequency: 'weekly', 
             priority: 0.9 
         },
-        {
-            url: `${baseUrl}/search`,
-            lastModified: new Date(),
-            changeFrequency: 'daily',
-            priority: 0.7,
-        },
+        // {
+        //     url: `${baseUrl}/search`,
+        //     lastModified: new Date(),
+        //     changeFrequency: 'daily',
+        //     priority: 0.7,
+        // },
     ];
 
     try {
