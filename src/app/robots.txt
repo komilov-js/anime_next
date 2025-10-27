@@ -3,14 +3,6 @@
 # Purpose: Allow search engines to index main pages while keeping private routes hidden
 
 User-agent: *
-Disallow: /admin/
-Disallow: /api/
-Disallow: /static/
-Disallow: /media/
-Disallow: /login
-Disallow: /register
-Disallow: /notifications
-Allow: /
 
 # Sitemap location
 Sitemap: https://www.anivibe.uz/sitemap.xml
