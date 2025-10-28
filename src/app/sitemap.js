@@ -17,25 +17,35 @@ const formatUrlString = (name) => {
 
 async function fetchData(endpoint) {
     try {
-        const apiUrl = `${apiBaseUrl}/${endpoint}`;
+        let apiUrl = `${apiBaseUrl}/${endpoint}`;
         console.log(`Fetching: ${apiUrl}`);
-        
-        const res = await fetch(apiUrl, {
-            cache: 'no-store',
-            headers: {
-                'Content-Type': 'application/json',
+
+        const data = [];
+
+        while (1) {
+            const res = await fetch(apiUrl, {
+                cache: 'no-store',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+
+            console.log(`Response status: ${res.status} for ${endpoint}`);
+
+            if (!res.ok) {
+                const errorText = await res.text();
+                console.error(`API Error ${res.status}: ${errorText}`);
+                throw new Error(`${endpoint} yuklanmadi. Status: ${res.status}`);
             }
-        });
-        
-        console.log(`Response status: ${res.status} for ${endpoint}`);
-        
-        if (!res.ok) {
-            const errorText = await res.text();
-            console.error(`API Error ${res.status}: ${errorText}`);
-            throw new Error(`${endpoint} yuklanmadi. Status: ${res.status}`);
+
+            const paginatedData = await res.json();
+            if (paginatedData) {
+                data = [...data, ...paginatedData.results];
+                apiUrl = paginatedData.next;
+            } else {
+                break;
+            }
         }
-        
-        const data = (await res.json()).results;
         console.log(`Successfully fetched ${endpoint}, data length:`, Array.isArray(data) ? data.length : 'not array');
         return data;
     } catch (error) {
@@ -47,27 +57,27 @@ async function fetchData(endpoint) {
 export default async function sitemap() {
     // Statik sahifalar
     const staticPages = [
-        { 
-            url: baseUrl, 
-            lastModified: new Date(), 
-            changeFrequency: 'daily', 
-            priority: 1 
+        {
+            url: baseUrl,
+            lastModified: new Date(),
+            changeFrequency: 'daily',
+            priority: 1
         },
-        { 
+        {
             url: `${baseUrl}/barcha-animelar`,
-            lastModified: new Date(), 
-            changeFrequency: 'weekly', 
-            priority: 0.9 
+            lastModified: new Date(),
+            changeFrequency: 'weekly',
+            priority: 0.9
         },
     ];
 
     try {
         console.log('Starting sitemap generation...');
-        
+
         // Anime ma'lumotlarini olish
         const animesResponse = await fetchData('api/animes/');
         console.log('Animes response:', animesResponse);
-        
+
         // Agar ma'lumotlar massiv bo'lmasa
         const animes = Array.isArray(animesResponse) ? animesResponse : [];
         console.log(`Processing ${animes.length} animes`);
@@ -109,7 +119,7 @@ export default async function sitemap() {
                     });
                 }
             });
-            
+
             categoryPages = Array.from(categories).map(catStr => {
                 const cat = JSON.parse(catStr);
                 return {
@@ -145,9 +155,9 @@ export default async function sitemap() {
         console.log(`Created ${episodePages.length} episode pages`);
 
         const allPages = [
-            ...staticPages, 
-            ...animePages, 
-            ...categoryPages, 
+            ...staticPages,
+            ...animePages,
+            ...categoryPages,
             ...episodePages
         ];
 
