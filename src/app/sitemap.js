@@ -1,7 +1,7 @@
-// import { global_api_ssr } from "@/app/_app";
+import { global_api_ssr } from "@/app/_app";
 
 export const revalidate = 3600; // 1 soatda bir yangilanish
-const global_api_ssr = 'https://api.anivibe.uz';
+// const global_api_ssr = 'https://api.anivibe.uz';
 
 const baseUrl = 'https://anivibe.uz';
 const apiBaseUrl = 'https://api.anivibe.uz';
@@ -35,7 +35,7 @@ async function fetchData(endpoint) {
             throw new Error(`${endpoint} yuklanmadi. Status: ${res.status}`);
         }
         
-        const data = await res.json();
+        const data = (await res.json()).results;
         console.log(`Successfully fetched ${endpoint}, data length:`, Array.isArray(data) ? data.length : 'not array');
         return data;
     } catch (error) {

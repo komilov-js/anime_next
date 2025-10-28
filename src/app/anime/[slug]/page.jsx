@@ -54,7 +54,6 @@ export default function AnimeDetail() {
   const fetchWithCounter = async (url, options = {}) => {
     incrementCount();
     const requestNumber = requestCount + 1;
-    console.log(`🔵 SO'ROV #${requestNumber}: ${url}`, options.method || 'GET');
 
     try {
       const startTime = Date.now();
