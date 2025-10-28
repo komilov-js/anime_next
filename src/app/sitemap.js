@@ -15,43 +15,50 @@ const formatUrlString = (name) => {
         .replace(/^-+|-+$/g, "");
 };
 
-async function fetchData(endpoint) {
-    try {
-        let apiUrl = `${apiBaseUrl}/${endpoint}`;
-        console.log(`Fetching: ${apiUrl}`);
+async function fetchPaginatedData(apiBaseUrl, endpoint) {
+  try {
+    let apiUrl = `${apiBaseUrl}/${endpoint}`;
+    console.log(`Fetching: ${apiUrl}`);
 
-        let data = [];
+    let data = [];
 
-        while (1) {
-            const res = await fetch(apiUrl, {
-                cache: 'no-store',
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            });
+    // Paginationni to'g'ri boshqarish uchun loop
+    while (apiUrl) {
+      const res = await fetch(apiUrl, {
+        cache: 'no-store',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
 
-            console.log(`Response status: ${res.status} for ${endpoint}`);
+      console.log(`Response status: ${res.status} for ${endpoint}`);
 
-            if (!res.ok) {
-                const errorText = await res.text();
-                console.error(`API Error ${res.status}: ${errorText}`);
-                throw new Error(`${endpoint} yuklanmadi. Status: ${res.status}`);
-            }
+      if (!res.ok) {
+        const errorText = await res.text();
+        console.error(`API Error ${res.status}: ${errorText}`);
+        throw new Error(`${endpoint} yuklanmadi. Status: ${res.status}`);
+      }
 
-            const paginatedData = await res.json();
-            if (paginatedData) {
-                data = [...data, ...paginatedData.results];
-                apiUrl = paginatedData.next;
-            } else {
-                break;
-            }
-        }
-        console.log(`Successfully fetched ${endpoint}, data length:`, Array.isArray(data) ? data.length : 'not array');
-        return data;
-    } catch (error) {
-        console.error(`${endpoint} fetch error:`, error.message);
-        throw error;
+      const paginatedData = await res.json();
+
+      // Natijani yig'ib boramiz
+      if (paginatedData && Array.isArray(paginatedData.results)) {
+        data = [...data, ...paginatedData.results];
+      } else if (Array.isArray(paginatedData)) {
+        // Ba'zi API-lar `results`siz faqat array qaytaradi
+        data = [...data, ...paginatedData];
+      }
+
+      // Keyingi sahifaga o'tish
+      apiUrl = paginatedData.next;
     }
+
+    console.log(`✅ ${endpoint} yuklandi. Jami elementlar: ${data.length}`);
+    return data;
+  } catch (error) {
+    console.error(`${endpoint} fetch error:`, error.message);
+    throw error;
+  }
 }
 
 export default async function sitemap() {
