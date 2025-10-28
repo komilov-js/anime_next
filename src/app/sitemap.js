@@ -15,7 +15,8 @@ const formatUrlString = (name) => {
         .replace(/^-+|-+$/g, "");
 };
 
-async function fetchData(endpoint, page = 1, pageSize = 20) {
+// Asosiy fetchData funksiyasi (pagination bilan)
+async function fetchData(endpoint, page = 1, pageSize = 100) {
     try {
         // Pagination parametrlarini qo'shish
         const apiUrl = `${apiBaseUrl}/${endpoint}?page=${page}&page_size=${pageSize}`;
@@ -48,7 +49,7 @@ async function fetchData(endpoint, page = 1, pageSize = 20) {
             data = responseData;
         }
         
-        console.log(`Successfully fetched ${endpoint}, data length:`, Array.isArray(data) ? data.length : 'not array');
+        console.log(`Successfully fetched ${endpoint}, page ${page}, data length:`, Array.isArray(data) ? data.length : 'not array');
         
         // Pagination ma'lumotlarini qaytarish
         return {
@@ -68,6 +69,47 @@ async function fetchData(endpoint, page = 1, pageSize = 20) {
     }
 }
 
+// Barcha ma'lumotlarni olish uchun funksiya
+async function fetchAllData(endpoint, pageSize = 100) {
+    let allData = [];
+    let currentPage = 1;
+    let hasMore = true;
+    
+    try {
+        while (hasMore) {
+            console.log(`Fetching page ${currentPage} for ${endpoint}`);
+            
+            const response = await fetchData(endpoint, currentPage, pageSize);
+            
+            if (response.data && Array.isArray(response.data) && response.data.length > 0) {
+                allData = [...allData, ...response.data];
+                console.log(`Page ${currentPage}: ${response.data.length} items, Total: ${allData.length}`);
+                
+                // Keyingi sahifa mavjudligini tekshirish
+                const totalPages = response.pagination.totalPages;
+                if (currentPage < totalPages && response.data.length === pageSize) {
+                    currentPage++;
+                } else {
+                    hasMore = false;
+                }
+            } else {
+                hasMore = false;
+            }
+            
+            // Kichik kutish (API limitlariga hurmat)
+            await new Promise(resolve => setTimeout(resolve, 100));
+        }
+        
+        console.log(`✅ ${endpoint} uchun jami ${allData.length} ta ma'lumot yuklandi`);
+        return allData;
+        
+    } catch (error) {
+        console.error(`${endpoint} uchun barcha ma'lumotlarni yuklashda xato:`, error);
+        throw error;
+    }
+}
+
+// Sitemap funksiyasi
 export default async function sitemap() {
     // Statik sahifalar
     const staticPages = [
@@ -88,16 +130,12 @@ export default async function sitemap() {
     try {
         console.log('Starting sitemap generation...');
         
-        // Anime ma'lumotlarini olish
-        const animesResponse = await fetchData('api/animes/');
-        console.log('Animes response:', animesResponse);
-        
-        // Agar ma'lumotlar massiv bo'lmasa
-        const animes = Array.isArray(animesResponse) ? animesResponse : [];
-        console.log(`Processing ${animes.length} animes`);
+        // Anime ma'lumotlarini olish (BARCHASINI)
+        const allAnimes = await fetchAllData('api/animes/');
+        console.log(`Total animes received: ${allAnimes.length}`);
 
         // Anime sahifalari
-        const animePages = animes.map(anime => {
+        const animePages = allAnimes.map(anime => {
             const slug = formatUrlString(anime.slug || anime.title);
             return {
                 url: `${baseUrl}/anime/${anime.id}/${slug}`,
@@ -112,9 +150,8 @@ export default async function sitemap() {
         // Kategoriya sahifalari
         let categoryPages = [];
         try {
-            const categoriesResponse = await fetchData('api/categories/');
-            const categories = Array.isArray(categoriesResponse) ? categoriesResponse : [];
-            categoryPages = categories.map(category => ({
+            const allCategories = await fetchAllData('api/categories/');
+            categoryPages = allCategories.map(category => ({
                 url: `${baseUrl}/category/${category.id}/${formatUrlString(category.slug || category.name)}`,
                 lastModified: new Date(),
                 changeFrequency: 'weekly',
@@ -124,7 +161,7 @@ export default async function sitemap() {
         } catch (error) {
             console.log('Falling back to categories from animes data');
             const categories = new Set();
-            animes.forEach(anime => {
+            allAnimes.forEach(anime => {
                 if (anime.category && Array.isArray(anime.category)) {
                     anime.category.forEach(cat => {
                         if (cat && cat.id && cat.name) {
@@ -148,7 +185,7 @@ export default async function sitemap() {
 
         // Epizod sahifalari
         const episodePages = [];
-        animes.forEach(anime => {
+        allAnimes.forEach(anime => {
             if (anime.seasons && Array.isArray(anime.seasons)) {
                 anime.seasons.forEach(season => {
                     if (season.episodes && Array.isArray(season.episodes)) {
