@@ -20,7 +20,7 @@ async function fetchData(endpoint) {
         let apiUrl = `${apiBaseUrl}/${endpoint}`;
         console.log(`Fetching: ${apiUrl}`);
 
-        const data = [];
+        let data = [];
 
         while (1) {
             const res = await fetch(apiUrl, {
