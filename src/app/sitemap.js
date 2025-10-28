@@ -15,76 +15,83 @@ const formatUrlString = (name) => {
         .replace(/^-+|-+$/g, "");
 };
 
-async function fetchPaginatedData(apiBaseUrl, endpoint) {
-  try {
-    let apiUrl = `${apiBaseUrl}/${endpoint}`;
-    console.log(`Fetching: ${apiUrl}`);
-
-    let data = [];
-
-    // Paginationni to'g'ri boshqarish uchun loop
-    while (apiUrl) {
-      const res = await fetch(apiUrl, {
-        cache: 'no-store',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      console.log(`Response status: ${res.status} for ${endpoint}`);
-
-      if (!res.ok) {
-        const errorText = await res.text();
-        console.error(`API Error ${res.status}: ${errorText}`);
-        throw new Error(`${endpoint} yuklanmadi. Status: ${res.status}`);
-      }
-
-      const paginatedData = await res.json();
-
-      // Natijani yig'ib boramiz
-      if (paginatedData && Array.isArray(paginatedData.results)) {
-        data = [...data, ...paginatedData.results];
-      } else if (Array.isArray(paginatedData)) {
-        // Ba'zi API-lar `results`siz faqat array qaytaradi
-        data = [...data, ...paginatedData];
-      }
-
-      // Keyingi sahifaga o'tish
-      apiUrl = paginatedData.next;
+async function fetchData(endpoint, page = 1, pageSize = 20) {
+    try {
+        // Pagination parametrlarini qo'shish
+        const apiUrl = `${apiBaseUrl}/${endpoint}?page=${page}&page_size=${pageSize}`;
+        console.log(`Fetching: ${apiUrl}`);
+        
+        const res = await fetch(apiUrl, {
+            cache: 'no-store',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+        
+        console.log(`Response status: ${res.status} for ${endpoint}`);
+        
+        if (!res.ok) {
+            const errorText = await res.text();
+            console.error(`API Error ${res.status}: ${errorText}`);
+            throw new Error(`${endpoint} yuklanmadi. Status: ${res.status}`);
+        }
+        
+        const responseData = await res.json();
+        
+        // API strukturasi bo'yicha ma'lumotlarni olish
+        let data;
+        if (responseData.results) {
+            data = responseData.results;
+        } else if (responseData.data) {
+            data = responseData.data;
+        } else {
+            data = responseData;
+        }
+        
+        console.log(`Successfully fetched ${endpoint}, data length:`, Array.isArray(data) ? data.length : 'not array');
+        
+        // Pagination ma'lumotlarini qaytarish
+        return {
+            data: data,
+            pagination: {
+                currentPage: page,
+                pageSize: pageSize,
+                totalCount: responseData.count || responseData.total_count || data.length,
+                totalPages: responseData.total_pages || Math.ceil((responseData.count || data.length) / pageSize),
+                next: responseData.next,
+                previous: responseData.previous
+            }
+        };
+    } catch (error) {
+        console.error(`${endpoint} fetch error:`, error.message);
+        throw error;
     }
-
-    console.log(`✅ ${endpoint} yuklandi. Jami elementlar: ${data.length}`);
-    return data;
-  } catch (error) {
-    console.error(`${endpoint} fetch error:`, error.message);
-    throw error;
-  }
 }
 
 export default async function sitemap() {
     // Statik sahifalar
     const staticPages = [
-        {
-            url: baseUrl,
-            lastModified: new Date(),
-            changeFrequency: 'daily',
-            priority: 1
+        { 
+            url: baseUrl, 
+            lastModified: new Date(), 
+            changeFrequency: 'daily', 
+            priority: 1 
         },
-        {
+        { 
             url: `${baseUrl}/barcha-animelar`,
-            lastModified: new Date(),
-            changeFrequency: 'weekly',
-            priority: 0.9
+            lastModified: new Date(), 
+            changeFrequency: 'weekly', 
+            priority: 0.9 
         },
     ];
 
     try {
         console.log('Starting sitemap generation...');
-
+        
         // Anime ma'lumotlarini olish
         const animesResponse = await fetchData('api/animes/');
         console.log('Animes response:', animesResponse);
-
+        
         // Agar ma'lumotlar massiv bo'lmasa
         const animes = Array.isArray(animesResponse) ? animesResponse : [];
         console.log(`Processing ${animes.length} animes`);
@@ -126,7 +133,7 @@ export default async function sitemap() {
                     });
                 }
             });
-
+            
             categoryPages = Array.from(categories).map(catStr => {
                 const cat = JSON.parse(catStr);
                 return {
@@ -162,9 +169,9 @@ export default async function sitemap() {
         console.log(`Created ${episodePages.length} episode pages`);
 
         const allPages = [
-            ...staticPages,
-            ...animePages,
-            ...categoryPages,
+            ...staticPages, 
+            ...animePages, 
+            ...categoryPages, 
             ...episodePages
         ];
 
