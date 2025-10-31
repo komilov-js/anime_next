@@ -138,7 +138,7 @@ export default async function sitemap() {
         const animePages = allAnimes.map(anime => {
             const slug = formatUrlString(anime.slug || anime.title);
             return {
-                url: `${baseUrl}/anime/${anime}/${slug}`,
+                url: `${baseUrl}/anime/${slug}`,
                 lastModified: new Date(anime.created_at || new Date()),
                 changeFrequency: 'weekly',
                 priority: 0.8,
@@ -152,7 +152,7 @@ export default async function sitemap() {
         try {
             const allCategories = await fetchAllData('api/categories/');
             categoryPages = allCategories.map(category => ({
-                url: `${baseUrl}/category/${category}/${formatUrlString(category.slug || category.name)}`,
+                url: `${baseUrl}/category/${formatUrlString(category.slug || category.name)}`,
                 lastModified: new Date(),
                 changeFrequency: 'weekly',
                 priority: 0.7,
@@ -174,7 +174,7 @@ export default async function sitemap() {
             categoryPages = Array.from(categories).map(catStr => {
                 const cat = JSON.parse(catStr);
                 return {
-                    url: `${baseUrl}/category/${cat}/${formatUrlString(cat.slug || cat.name)}`,
+                    url: `${baseUrl}/category/${formatUrlString(cat.slug || cat.name)}`,
                     lastModified: new Date(),
                     changeFrequency: 'weekly',
                     priority: 0.7,
@@ -192,7 +192,7 @@ export default async function sitemap() {
                         season.episodes.forEach(episode => {
                             const animeSlug = formatUrlString(anime.slug || anime.title);
                             episodePages.push({
-                                url: `${baseUrl}/anime/${anime}/${animeSlug}/season/${season.season_number}/episode/${episode.episode_number}`,
+                                url: `${baseUrl}/anime/${animeSlug}/season/${season.season_number}/episode/${episode.episode_number}`,
                                 lastModified: new Date(episode.created_at || new Date()),
                                 changeFrequency: 'monthly',
                                 priority: 0.6,
