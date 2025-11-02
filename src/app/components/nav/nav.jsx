@@ -4,26 +4,33 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import "./nav.scss";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { AuthContext } from "../context/context";
 import defImage from "./default.jpg";
 
 const Nav = () => {
   const { user } = useContext(AuthContext);
+  const pathname = usePathname(); // 🔹 Sahifa yo‘lini olish
+  const [scrolled, setScrolled] = useState(false);
+
   const [categories, setCategories] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
   const searchRef = useRef(null);
 
-  // 🔄 Orqaga bosilganda qidiruvni tozalash
+  // 🔄 Scroll kuzatish faqat home pageda
   useEffect(() => {
-    const clearSearch = () => {
-      setSearchTerm("");
-      setSearchResults([]);
+    if (pathname !== "/") return; // faqat home uchun ishlaydi
+
+    const handleScroll = () => {
+      if (window.scrollY > 20) setScrolled(true);
+      else setScrolled(false);
     };
-    window.addEventListener("popstate", clearSearch);
-    return () => window.removeEventListener("popstate", clearSearch);
-  }, []);
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [pathname]);
 
   // 📂 Kategoriyalarni olish
   useEffect(() => {
@@ -31,7 +38,6 @@ const Nav = () => {
       try {
         const res = await fetch("https://api.anivibe.uz/api/categories/");
         const data = await res.json();
-        // 🔹 Agar data.results mavjud bo‘lmasa ham ishlaydi
         const list = Array.isArray(data.results) ? data.results : data;
         setCategories(list);
       } catch (error) {
@@ -41,7 +47,7 @@ const Nav = () => {
     fetchCategories();
   }, []);
 
-  // 🔍 Qidiruv faqat yozish paytida ishlaydi
+  // 🔍 Qidiruv
   useEffect(() => {
     if (!isTyping || searchTerm.trim() === "") {
       setSearchResults([]);
@@ -54,7 +60,6 @@ const Nav = () => {
           `https://api.anivibe.uz/api/animes/?search=${encodeURIComponent(searchTerm)}`
         );
         const data = await res.json();
-        // 🔹 Agar data.results mavjud bo‘lmasa ham ishlaydi
         const list = Array.isArray(data.results) ? data.results : data;
         setSearchResults(list);
       } catch (error) {
@@ -65,7 +70,6 @@ const Nav = () => {
     return () => clearTimeout(delayDebounce);
   }, [searchTerm, isTyping]);
 
-  // ⌨️ Enter bosilganda tozalash
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
       setSearchTerm("");
@@ -74,7 +78,7 @@ const Nav = () => {
     }
   };
 
-  // 🖱️ tashqariga bosilganda yopish
+  // tashqariga bosilganda yopish
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (searchRef.current && !searchRef.current.contains(e.target)) {
@@ -87,17 +91,24 @@ const Nav = () => {
     return () => document.removeEventListener("click", handleClickOutside);
   }, []);
 
+  // 🔹 Dynamic class: home + scroll ga qarab
+  const navClass =
+    pathname === "/"
+      ? scrolled
+        ? "nav nav-blurred"
+        : "nav nav-transparent"
+      : "nav";
+
   return (
     <>
-      <div className="nav">
-        {/* 🔹 Logo */}
+      <div className={navClass}>
+        {/* logo */}
         <div className="logo">
           <Link href="/">
             <Image src="/favicon.ico" alt="logo" width={100} height={40} priority />
           </Link>
         </div>
 
-        {/* 🔍 Qidiruv va kategoriyalar */}
         <div className="nav-menu-search" ref={searchRef}>
           <div className="search">
             <input
@@ -120,7 +131,6 @@ const Nav = () => {
           </div>
         </div>
 
-        {/* 🔔 Profil va telegram */}
         <div className="nav-right-container">
           <div className="notification-comment">
             <Link href="/notifications">
@@ -140,7 +150,6 @@ const Nav = () => {
             </a>
           </div>
 
-          {/* 👤 Profil yoki login */}
           <div className="nav-login-profile">
             {user ? (
               <Link href="/profile" className="user-info">
