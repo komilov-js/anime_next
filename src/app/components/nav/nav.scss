@@ -460,37 +460,3 @@
     }
   }
 }
-/* 🔹 Asosiy nav shaffof variantlari */
-.nav-transparent {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  background: transparent;
-  backdrop-filter: none;
-  border-bottom: none;
-  transition: background 0.3s ease, backdrop-filter 0.3s ease;
-  // padding: px;
-  padding: 0px 120px;
-  // border-bottom:1px solid black;
-  // border-width: 80%;
-
-
-  .nav-menu-search{
-    .search{
-      input{
-        
-      }
-    }
-  }
-}
-
-.nav-blurred {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  background: rgba(16, 16, 16, 0.85);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  transition: background 0.3s ease, backdrop-filter 0.3s ease;
-  padding: 0px 120px;
-}
