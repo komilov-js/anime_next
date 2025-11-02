@@ -470,6 +470,13 @@
   border-bottom: none;
   transition: background 0.3s ease, backdrop-filter 0.3s ease;
   // padding: px;
+  .nav-menu-search{
+    .search{
+      input{
+        
+      }
+    }
+  }
 }
 
 .nav-blurred {
