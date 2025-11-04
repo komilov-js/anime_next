@@ -112,7 +112,7 @@ export default function LoginPage() {
         {error && <p className="error">{error}</p>}
 
         <div className="link-create">
-          <p>Siz yangimisiz Uz-anime?</p>
+          <p>Siz yangimisiz Anivibe uz da?</p>
           <a href="/register">Yangi foydalanuvchi yaratish!</a>
         </div>
       </div>

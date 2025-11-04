@@ -3,10 +3,13 @@ export const fetchWithAuth = async (url, options = {}) => {
   let access = localStorage.getItem("access");
   let refresh = localStorage.getItem("refresh");
 
-  let headers = {
-    "Content-Type": "application/json",
-    ...(options.headers || {}),
-  };
+  // Agar body FormData bo'lsa, Content-Type ni olib tashlaymiz
+  let headers = { ...(options.headers || {}) };
+
+  // Agar body FormData bo'lmasa va Content-Type berilmagan bo'lsa, default qo'shamiz
+  if (!(options.body instanceof FormData) && !headers['Content-Type']) {
+    headers['Content-Type'] = 'application/json';
+  }
 
   if (access) {
     headers["Authorization"] = `Bearer ${access}`;
@@ -49,10 +52,51 @@ export const fetchWithAuth = async (url, options = {}) => {
     }
   }
 
+  if (!response.ok) {
+    // Agar response OK bo'lmasa, error detailini olish
+    try {
+      const errorData = await response.json();
+      
+      // Validation xatolarini aniqroq ko'rsatish
+      if (response.status === 400) {
+        let errorMessage = "Validation error: ";
+        if (typeof errorData === 'object') {
+          const errors = [];
+          Object.keys(errorData).forEach(key => {
+            if (Array.isArray(errorData[key])) {
+              errors.push(...errorData[key]);
+            } else {
+              errors.push(errorData[key]);
+            }
+          });
+          errorMessage += errors.join(', ');
+        } else {
+          errorMessage += JSON.stringify(errorData);
+        }
+        throw new Error(errorMessage);
+      } else {
+        throw new Error(errorData.detail || errorData.message || `HTTP error! status: ${response.status}`);
+      }
+    } catch (parseError) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+  }
+
   // agar javob JSON bo'lsa qaytarib yuboramiz
+  // Agar response body bo'sh bo'lsa (204 No Content)
+  if (response.status === 204) {
+    return { success: true, status: 204 };
+  }
+
   try {
-    return await response.json();
-  } catch {
+    const contentType = response.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
+      return await response.json();
+    } else {
+      return response;
+    }
+  } catch (error) {
+    console.error("JSON parse error:", error);
     return response;
   }
 };
@@ -105,6 +149,15 @@ export const likeWithAuth = async (url, options = {}) => {
     } catch (err) {
       console.error("Refresh error:", err);
       throw err;
+    }
+  }
+
+  if (!response.ok) {
+    try {
+      const errorData = await response.json();
+      throw new Error(errorData.detail || errorData.message || `HTTP error! status: ${response.status}`);
+    } catch (parseError) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
   }
 

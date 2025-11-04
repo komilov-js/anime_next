@@ -1,20 +1,38 @@
 .nav {
+  position: relative; // Bu qo'shildi
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  height: 10vh;
+  height: 12vh;
   padding: 0 30px;
-  background: #101010;
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  // border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   position: sticky;
   top: 0;
   z-index: 100;
-  transition: background 0.3s ease;
+  transition: all 0.3s ease;
   font-family: "Libertinus Serif", serif;
   font-weight: 400;
   font-style: normal;
+
+  // Home page uchun default holati (transparent)
+  &.nav-home {
+    background: transparent;
+    position: fixed;
+    padding: 0px 150px;
+
+    // Scroll bo'lganda qora fon
+    &.nav-scrolled {
+      background: #101010;
+      padding: 0px !important;
+      // padding: 0px 20px !important;
+    }
+  }
+
+  // Boshqa pagelar uchun doim qora fon
+  &.nav-other {
+    background: #101010;
+  }
 
   .logo {
     font-size: 1.8rem;
@@ -44,11 +62,11 @@
     justify-content: center;
     align-items: center;
     gap: 20px;
+    position: relative; // Bu qo'shildi
 
     #manga {
       text-decoration: none;
       color: white;
-
     }
 
     .search {
@@ -59,6 +77,9 @@
       padding: 6px 12px;
       border-radius: 10px;
       transition: box-shadow 0.3s ease;
+      position: relative; // Bu qo'shildi
+      width: 100%;
+      max-width: 600px;
 
       input {
         background: transparent;
@@ -67,7 +88,7 @@
         outline: none;
         font-size: 15px;
         padding: 5px;
-        width: 300px;
+        width: 100%;
 
         &::placeholder {
           color: rgba(255, 255, 255, 0.7);
@@ -168,7 +189,6 @@
         box-shadow: 0 0 0 rgba(255, 0, 0, 0);
 
         &:hover {
-          // transform: scale(1.12) rotate(3deg);
           box-shadow: 0 0 18px rgba(255, 0, 0, 0.6),
             0 0 25px rgba(255, 0, 0, 0.3);
           border-color: #ff4545;
@@ -203,7 +223,6 @@
         }
       }
     }
-
   }
 }
 
@@ -227,6 +246,15 @@
 
 /* 📱 RESPONSIVE */
 @media (max-width: 992px) {
+  .nav-home {
+    padding: 10px 5px !important;
+    position: sticky !important;
+    background-color: #101010 !important;
+    .nav-scrolled {
+      // padding: 0px !important;
+    }
+  }
+
   .nav {
     padding: 0 20px;
 
@@ -247,9 +275,7 @@
         .sign-in-link {
           padding: 6px 12px;
           font-size: 14px;
-
         }
-
       }
     }
   }
@@ -257,22 +283,22 @@
 
 @media (max-width: 900px) {
   .nav {
-    flex-wrap: wrap; // elementlar pastga tushishiga ruxsat
+    flex-wrap: wrap;
     height: auto;
     padding: 15px;
 
     .logo {
-      order: 1; // chap yuqori
+      order: 1;
       margin-bottom: 0;
     }
 
     .nav-right-container {
-      order: 2; // o‘ng yuqori
+      order: 2;
     }
 
     .nav-menu-search {
-      order: 3; // pastga tushadi
-      width: 100%; // to‘liq kenglik
+      order: 3;
+      width: 100%;
       margin-top: 10px;
 
       .search {
@@ -282,35 +308,38 @@
         input {
           width: 100%;
         }
-
-        .nav-menu {
-          // display: none; 
-        }
       }
     }
   }
 }
 
+// Search results yangi joylashuvi
 .search-results {
-  position: fixed;
-  left: 50%;
-  transform: translateX(-50%);
+  position: absolute;
+  top: 100%; // Navning pastki qismidan boshlanadi
+  left: 0;
+  right: 0;
   z-index: 1000;
   display: flex;
   flex-direction: column;
   gap: 12px;
   padding: 12px;
-  width: 90%;
-  max-width: 1000px; // katta ekranlar uchun limit
-  background-color: rgba(51, 51, 51, 0.95); // biroz shaffof fon
-  border-radius: 10px;
+  width: 100%;
+  max-width: 100%;
+  background: #101010;
+
+  border-radius: 0 0 10px 10px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-  overflow: hidden; // chiqib ketmasligi uchun
-  max-height: 500px;
-  overflow-y: auto; // vertikal scroll
+  overflow: hidden;
+  max-height: 400px;
+  overflow-y: auto;
+  backdrop-filter: blur(8px);
+  transition: all 0.3s ease;
+  margin-top: 0; // Input bilan orasida bo'shliq bo'lmasligi uchun
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 
   &::-webkit-scrollbar {
-    width: 10px; // scroll kengligi
+    width: 8px;
   }
 
   &::-webkit-scrollbar-track {
@@ -321,12 +350,12 @@
   &::-webkit-scrollbar-thumb {
     background: linear-gradient(180deg, #f20114, #c50010);
     border-radius: 10px;
-    border: 2px solid rgba(51, 51, 51, 0.95); // fon bilan uyg‘unlashadi
+    border: 2px solid rgba(51, 51, 51, 0.95);
     transition: background 0.3s ease;
   }
 
   &::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(180deg, #ff2a36, #f20114); // hoverda yanada yorqin
+    background: linear-gradient(180deg, #ff2a36, #f20114);
   }
 
   a {
@@ -336,8 +365,8 @@
     transition: all 0.3s ease;
 
     &:hover {
-      background-color: #555555;
-      transform: scale(1.02); // kichik o‘sish effekti
+      background-color: rgba(255, 255, 255, 0.08);
+      transform: scale(1.02);
     }
   }
 
@@ -386,25 +415,129 @@
   }
 }
 
+/* 🔹 RESPONSIVE HOLATLAR */
+@media (max-width: 1024px) {
+  .search-results {
+    .result-container {
+      img {
+        width: 75px;
+        height: 85px;
+      }
+
+      div {
+        h3 {
+          font-size: 16px;
+        }
+
+        p {
+          font-size: 13px;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .search-results {
+    padding: 10px;
+    gap: 10px;
+    max-height: 350px;
+
+    .result-container {
+      img {
+        width: 70px;
+        height: 80px;
+      }
+
+      div {
+        h3 {
+          font-size: 15px;
+        }
+
+        p {
+          font-size: 12px;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .search-results {
+    padding: 8px;
+    border-radius: 0 0 8px 8px;
+    max-height: 300px;
+
+    .result-container {
+      gap: 10px;
+      padding: 8px;
+
+      img {
+        width: 60px;
+        height: 70px;
+      }
+
+      div {
+        h3 {
+          font-size: 14px;
+        }
+
+        p {
+          font-size: 12px;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .search-results {
+    gap: 8px;
+    padding: 6px;
+    border-radius: 0 0 6px 6px;
+    max-height: 250px;
+
+    .result-container {
+      gap: 8px;
+      padding: 6px;
+
+      img {
+        width: 55px;
+        height: 65px;
+      }
+
+      div {
+        h3 {
+          font-size: 13px;
+        }
+
+        p {
+          font-size: 11px;
+          -webkit-line-clamp: 3;
+        }
+      }
+    }
+  }
+}
 
 @media (max-width: 768px) {
   .nav {
-    flex-wrap: wrap; // pastga tushishiga ruxsat beramiz
+    flex-wrap: wrap;
     height: auto;
     padding: 15px;
 
     .logo {
-      order: 1; // chap yuqori
+      order: 1;
       margin-bottom: 0;
     }
 
     .nav-right-container {
-      order: 2; // o‘ng yuqori
+      order: 2;
     }
 
     .nav-menu-search {
-      order: 3; // pastga tushadi
-      width: 100%; // to‘liq kenglik
+      order: 3;
+      width: 100%;
       margin-top: 10px;
 
       .search {
@@ -416,8 +549,6 @@
         }
 
         .nav-menu {
-
-          // display: none; 
           a {
             font-size: 10px;
           }
@@ -427,16 +558,17 @@
   }
 }
 
-
 @media (max-width: 480px) {
   .nav {
     padding: 10px;
 
     .logo {
       font-size: 1.4rem;
-      .user-info{
+
+      .user-info {
         font-size: 10px;
       }
+
       img {
         width: 50px;
       }
@@ -444,9 +576,10 @@
 
     .nav-right-container {
       .nav-login-profile {
-        .user-info{
+        .user-info {
           font-size: 15px;
         }
+
         .profile-img {
           width: 38px;
           height: 38px;

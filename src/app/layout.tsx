@@ -9,16 +9,16 @@ import Footer from "./components/footer/footer";
 
 export const metadata: Metadata = {
   title: {
-    default: "Anivibe",
-    template: "%s | Anivibe", 
+    default: "Anivibe uz",
+    template: "%s | Anivibe uz", 
   },
   description: "O'zbek tilidagi eng zo‘r anime platformasi — Anivibe!",
   keywords: ["anime", "Anivibe", "uzbek tilida anime", "anime uzbek tilida", "anibla", "amedia", "yangi animelar","eng zo'r animelar","Anime uzbek tilida bepul", "Anime uzbek tilida tekin" ],
   openGraph: {
-    title: "Anivibe",
+    title: "Anivibe uz",
     description: "Eng sifatli o'zbek tilidagi animelar faqat Anivibe’da!",
     url: "https://anivibe.uz",
-    siteName: "Anivibe",
+    siteName: "Anivibe uz",
     images: [
       {
         url: "/anivibe-banner.jpg",
@@ -32,8 +32,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Anivibe",
-    description: "O'zbek tilidagi eng zo‘r anime platformasi — Anivibe!",
+    title: "Anivibe uz",
+    description: "O'zbek tilidagi eng zo‘r anime platformasi — Anivibe uz!",
     images: ["/anivibe-banner.jpg"],
   },
   icons: {

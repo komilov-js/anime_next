@@ -1,6 +1,6 @@
 .mySwiper {
     width: 100%;
-    height: 90vh;
+    height: 100vh;
 }
 
 .slide-bg {
@@ -128,6 +128,7 @@
         align-items: center;
         // text-align: center;
         gap: 40px;
+        // height: 0vh;
 
         .slide-text {
             // text-align: center;
@@ -160,9 +161,10 @@
         // text-align: left !important;
 
         .slide-text {
-            gap: 10px !important;
-            padding: 30px;
-            // text-align: left !important;
+
+            gap: 5px !important;
+            padding: 20px;
+            text-align: left !important;
 
             h1 {
                 font-size: 30px;
@@ -195,3 +197,4 @@
     }
 
 }
+

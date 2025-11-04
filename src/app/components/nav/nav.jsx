@@ -4,6 +4,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import "./nav.scss";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { AuthContext } from "../context/context";
 import defImage from "./default.jpg";
 
@@ -13,7 +14,28 @@ const Nav = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const searchRef = useRef(null);
+  const pathname = usePathname();
+
+  // Joriy sahifa home page ekanligini tekshirish
+  const isHomePage = pathname === "/";
+
+  // Scroll ni kuzatish
+  useEffect(() => {
+    if (!isHomePage) {
+      setIsScrolled(true);
+      return;
+    }
+
+    const handleScroll = () => {
+      const scrollTop = window.scrollY;
+      setIsScrolled(scrollTop > 50);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isHomePage]);
 
   // 🔄 Orqaga bosilganda qidiruvni tozalash
   useEffect(() => {
@@ -31,7 +53,6 @@ const Nav = () => {
       try {
         const res = await fetch("https://api.anivibe.uz/api/categories/");
         const data = await res.json();
-        // 🔹 Agar data.results mavjud bo‘lmasa ham ishlaydi
         const list = Array.isArray(data.results) ? data.results : data;
         setCategories(list);
       } catch (error) {
@@ -54,7 +75,6 @@ const Nav = () => {
           `https://api.anivibe.uz/api/animes/?search=${encodeURIComponent(searchTerm)}`
         );
         const data = await res.json();
-        // 🔹 Agar data.results mavjud bo‘lmasa ham ishlaydi
         const list = Array.isArray(data.results) ? data.results : data;
         setSearchResults(list);
       } catch (error) {
@@ -89,7 +109,7 @@ const Nav = () => {
 
   return (
     <>
-      <div className="nav">
+      <div className={`nav ${isHomePage ? 'nav-home' : 'nav-other'} ${isScrolled ? 'nav-scrolled' : ''}`}>
         {/* 🔹 Logo */}
         <div className="logo">
           <Link href="/">
@@ -109,6 +129,32 @@ const Nav = () => {
               onKeyDown={handleKeyPress}
               className="search-input"
             />
+
+            {/* 🔽 Qidiruv natijalari - endi shu yerda */}
+            {searchResults.length > 0 && (
+              <div className="search-results">
+                {searchResults.map((anime) => (
+                  <Link
+                    key={anime.id}
+                    href={`/anime/${anime.slug}`}
+                    className="search-item"
+                    onClick={() => {
+                      setSearchTerm("");
+                      setSearchResults([]);
+                      setIsTyping(false);
+                    }}
+                  >
+                    <div className="result-container">
+                      <Image src={anime.main_image} alt={anime.title} width={60} height={60} unoptimized />
+                      <div>
+                        <h3>{anime.title}</h3>
+                        <p>{anime.description}</p>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            )}
 
             <div className="nav-menu">
               {categories.map((cat) => (
@@ -149,7 +195,7 @@ const Nav = () => {
                   className="profile-img"
                   src={
                     user.profile_img
-                      ? `http://api.anivibe.uz${user.profile_img}`
+                      ? `https://api.anivibe.uz/${user.profile_img}`
                       : defImage
                   }
                   alt={user.username || "user"}
@@ -165,32 +211,6 @@ const Nav = () => {
           </div>
         </div>
       </div>
-
-      {/* 🔽 Qidiruv natijalari */}
-      {searchResults.length > 0 && (
-        <div className="search-results">
-          {searchResults.map((anime) => (
-            <Link
-              key={anime.id}
-              href={`/anime/${anime.slug}`}
-              className="search-item"
-              onClick={() => {
-                setSearchTerm("");
-                setSearchResults([]);
-                setIsTyping(false);
-              }}
-            >
-              <div className="result-container">
-                <Image src={anime.main_image} alt={anime.title} width={60} height={60} unoptimized />
-                <div>
-                  <h3>{anime.title}</h3>
-                  <p>{anime.description}</p>
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
-      )}
     </>
   );
 };
