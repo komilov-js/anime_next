@@ -16,7 +16,7 @@ const Slide = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch("https://api.anivibe.uz/api/animes/?page_size=5", {
+        const res = await fetch("http://api.anivibe.uz/api/animes/?page_size=5", {
           next: { revalidate: 60 },
         });
         const json = await res.json();

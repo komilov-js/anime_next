@@ -36,7 +36,7 @@ const CategoryPage = () => {
     const fetchAnimes = async () => {
       try {
         const res = await fetch(
-          `https://api.anivibe.uz/api/pganimes/?category=${slug}&page=${currentPage}&page_size=${itemsPerPage}`
+          `http://api.anivibe.uz/api/pganimes/?category=${slug}&page=${currentPage}&page_size=${itemsPerPage}`
         );
         if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
 
@@ -58,7 +58,7 @@ const CategoryPage = () => {
 
     // ❤️ Foydalanuvchining saqlanganlari
     if (user) {
-      fetchWithAuth("https://api.anivibe.uz/api/saved-animes/")
+      fetchWithAuth("http://api.anivibe.uz/api/saved-animes/")
         .then((res) => {
           if (Array.isArray(res)) {
             const favs = {};
@@ -93,7 +93,7 @@ const CategoryPage = () => {
     if (already) {
       try {
         const res = await fetchWithAuth(
-          `https://api.anivibe.uz/api/saved-animes/${anime.slug}/`,
+          `http://api.anivibe.uz/api/saved-animes/${anime.slug}/`,
           { method: "DELETE" }
         );
 
@@ -110,7 +110,7 @@ const CategoryPage = () => {
       }
     } else {
       try {
-        const res = await fetchWithAuth("https://api.anivibe.uz/api/saved-animes/", {
+        const res = await fetchWithAuth("http://api.anivibe.uz/api/saved-animes/", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ anime_slug: anime.slug }),

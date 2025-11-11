@@ -28,7 +28,7 @@ const PageAnime = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch(`https://api.anivibe.uz/api/home-animes/`);
+        const res = await fetch(`http://api.anivibe.uz/api/home-animes/`);
         const data = await res.json();
         // 🔽 limit bo‘yicha kesamiz
         setAnimePage(data.slice(0, limit));
@@ -38,7 +38,7 @@ const PageAnime = () => {
 
       if (user) {
         try {
-          const res = await fetchWithAuth("https://api.anivibe.uz/api/saved-animes/");
+          const res = await fetchWithAuth("http://api.anivibe.uz/api/saved-animes/");
           if (Array.isArray(res)) {
             const slugs = res.map((item) => item.anime.slug);
             setSavedList(slugs);
@@ -72,7 +72,7 @@ const PageAnime = () => {
 
     if (already) {
       try {
-        const res = await fetchWithAuth(`https://api.anivibe.uz/api/saved-animes/${slug}/`, {
+        const res = await fetchWithAuth(`http://api.anivibe.uz/api/saved-animes/${slug}/`, {
           method: "DELETE",
         });
 
@@ -87,7 +87,7 @@ const PageAnime = () => {
       }
     } else {
       try {
-        const res = await fetchWithAuth("https://api.anivibe.uz/api/saved-animes/", {
+        const res = await fetchWithAuth("http://api.anivibe.uz/api/saved-animes/", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ anime_slug: slug }),
@@ -112,7 +112,7 @@ const PageAnime = () => {
     if (viewedList.includes(slug)) return;
 
     try {
-      await fetchWithAuth("https://api.anivibe.uz/api/viewed-animes/", {
+      await fetchWithAuth("http://api.anivibe.uz/api/viewed-animes/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ anime_slug: slug }),

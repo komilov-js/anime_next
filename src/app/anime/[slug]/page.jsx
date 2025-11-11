@@ -9,6 +9,7 @@ import "./animeDetail.scss";
 import "../../components/loading/loading.scss";
 
 // Auth Modal komponenti
+// Auth Modal komponenti (oddiy <a> tegi bilan)
 const AuthModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
@@ -59,13 +60,13 @@ const useRequestCounter = () => {
 
 export default function AnimeDetail() {
   const { slug } = useParams();
-  const router = useRouter();
-  const searchParams = useSearchParams();
+  const router = useRouter()
+  const search = useSearchParams()
   const [anime, setAnime] = useState(null);
   const [currentSeason, setCurrentSeason] = useState(null);
   const [currentEpisode, setCurrentEpisode] = useState(null);
   const [saved, setSaved] = useState(false);
-  const { user, login } = useContext(AuthContext);
+  const { user, login } = useContext(AuthContext); // login funksiyasini qo'shdik
   const [comments, setComments] = useState([]);
   const [commentText, setCommentText] = useState("");
   const [error, setError] = useState("");
@@ -75,9 +76,8 @@ export default function AnimeDetail() {
   const [dislikesCount, setDislikesCount] = useState(0);
   const [saveLoading, setSaveLoading] = useState(false);
   const [likeLoading, setLikeLoading] = useState(false);
-  const [dislikeLoading, setDislikeLoading] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
-  const [authAction, setAuthAction] = useState("");
+  const [authAction, setAuthAction] = useState(""); // "like" yoki "comment"
 
   // So'rovlar hisoblagichi
   const { requestCount, incrementCount, resetCount } = useRequestCounter();
@@ -94,11 +94,25 @@ export default function AnimeDetail() {
     setAuthAction("");
   };
 
+  // Login sahifasiga yo'naltirish
+  const handleAuthRedirect = () => {
+    closeAuthModal();
+    // Login sahifasiga yo'naltirish logikasi
+    // Masalan: router.push('/login') yoki login() funksiyasini chaqirish
+    if (login) {
+      login();
+    }
+  };
+
   // So'rovlar sonini oshiruvchi wrapper funksiyalar
   const fetchWithCounter = async (url, options = {}) => {
     incrementCount();
+    const requestNumber = requestCount + 1;
+
     try {
+      const startTime = Date.now();
       const response = await fetch(url, options);
+      const endTime = Date.now();
       return response;
     } catch (error) {
       console.error(`🔴 SO'ROV XATOLIK:`, error);
@@ -108,6 +122,8 @@ export default function AnimeDetail() {
 
   const fetchWithAuthAndCounter = async (url, options = {}) => {
     incrementCount();
+    const requestNumber = requestCount + 1;
+
     try {
       const response = await fetchWithAuth(url, options);
       return response;
@@ -117,9 +133,11 @@ export default function AnimeDetail() {
     }
   };
 
-  // LIKE UCHUN YANGI FUNKSIYA
+  // ✅ LIKE UCHUN YANGI FUNKSIYA
   const likeWithAuthAndCounter = async (url, options = {}) => {
     incrementCount();
+    const requestNumber = requestCount + 1;
+
     try {
       const response = await likeWithAuth(url, options);
       return response;
@@ -133,11 +151,10 @@ export default function AnimeDetail() {
   const fetchLikeStats = async (animeSlug) => {
     try {
       const response = await fetchWithCounter(`https://api.anivibe.uz/api/animes/${animeSlug}/likes/`);
-      if (response.ok) {
-        const data = await response.json();
-        setLikesCount(data.likes_count || 0);
-        setDislikesCount(data.dislikes_count || 0);
-      }
+      const data = await response.json();
+
+      setLikesCount(data.likes_count || 0);
+      setDislikesCount(data.dislikes_count || 0);
     } catch (error) {
       console.error("❌ Like statistikasini olishda xatolik:", error);
       setLikesCount(0);
@@ -151,9 +168,9 @@ export default function AnimeDetail() {
 
     try {
       const response = await fetchWithAuthAndCounter(`https://api.anivibe.uz/api/animes/${animeSlug}/like-status/`);
-      if (response && response.ok) {
-        const data = await response.json();
-        setLikeStatus(data.status);
+
+      if (response && response.status !== undefined) {
+        setLikeStatus(response.status);
       }
     } catch (error) {
       console.error("❌ Like holatini olishda xatolik:", error);
@@ -170,8 +187,6 @@ export default function AnimeDetail() {
     const fetchAnime = async () => {
       try {
         const res = await fetchWithCounter(`https://api.anivibe.uz/api/animes/${slug}/`);
-        if (!res.ok) throw new Error('Anime ma\'lumotlarini olishda xatolik');
-        
         const data = await res.json();
         setAnime(data);
 
@@ -189,11 +204,9 @@ export default function AnimeDetail() {
         if (user) {
           try {
             const savedData = await fetchWithAuthAndCounter(`https://api.anivibe.uz/api/saved-animes/`);
-            if (savedData) {
-              setSaved(
-                Array.isArray(savedData) && savedData.some((item) => item.anime?.slug === data.slug)
-              );
-            }
+            setSaved(
+              Array.isArray(savedData) && savedData.some((item) => item.anime?.slug === data.slug)
+            );
           } catch (savedError) {
             console.error("Saqlangan animelarni olishda xatolik:", savedError);
           }
@@ -201,35 +214,24 @@ export default function AnimeDetail() {
 
       } catch (err) {
         console.error("❌ Anime ma'lumotlarini olishda xatolik:", err);
-        setError("Anime ma'lumotlarini yuklashda xatolik yuz berdi");
       }
     };
 
     fetchAnime();
   }, [slug, user]);
 
-  // Season va episode'larni URL parametrlariga qarab o'rnatish
   useEffect(() => {
     if (anime && anime.seasons) {
-      const searchSeason = searchParams.get("season");
-      const searchPart = searchParams.get("part");
-      
-      const season = searchSeason 
-        ? anime.seasons.find((s) => Number(s.season_number) === Number(searchSeason)) 
-        : anime.seasons[0];
-      
-      setCurrentSeason(season);
-      
-      if (season && season.episodes) {
-        const episode = searchPart 
-          ? season.episodes.find((a) => Number(a.episode_number) === Number(searchPart))
-          : season.episodes[0];
-        setCurrentEpisode(episode);
-      }
+      const searchSeason = search.get("season")
+      const season = searchSeason ? anime.seasons.find((s) => Number(s.season_number) == Number(searchSeason)) : anime.seasons[0]
+      setCurrentSeason(season)
+      const searchPart = search.get("part")
+      const animeL = searchPart ? season.episodes.find((a) => Number(a.episode_number) == Number(searchPart)) : season.episodes[0]
+      setCurrentEpisode(animeL)
     }
-  }, [searchParams, anime]);
+  }, [search, anime])
 
-  // Izoh yuborish
+  // 🔹 Izoh yuborish
   const handleSendComment = async () => {
     if (!user) {
       openAuthModal("comment");
@@ -247,8 +249,6 @@ export default function AnimeDetail() {
     }
 
     setLoading(true);
-    setError("");
-    
     try {
       const response = await fetchWithAuthAndCounter(`https://api.anivibe.uz/api/comments/`, {
         method: "POST",
@@ -287,16 +287,14 @@ export default function AnimeDetail() {
     }
   };
 
-  // Like funksiyasi
+  // 🔹 Like/Dislike funksiyasi - ✅ YANGILANGAN
   const handleLike = async (value) => {
     if (!anime || !user) {
       openAuthModal("like");
       return;
     }
 
-    if (value === 0) setLikeLoading(true);
-    if (value === 1) setDislikeLoading(true);
-
+    setLikeLoading(true);
     try {
       const responseData = await likeWithAuthAndCounter(`https://api.anivibe.uz/api/likes/`, {
         method: "POST",
@@ -340,11 +338,10 @@ export default function AnimeDetail() {
       await fetchLikeStats(anime.slug);
     } finally {
       setLikeLoading(false);
-      setDislikeLoading(false);
     }
   };
 
-  // Anime saqlash
+  // 🔹 Anime saqlash
   const handleSave = async () => {
     if (!user) {
       openAuthModal("save");
@@ -363,31 +360,30 @@ export default function AnimeDetail() {
       setSaved(true);
     } catch (err) {
       console.error("❌ Anime saqlashda xatolik:", err);
-      setError("Anime saqlashda xatolik yuz berdi");
     } finally {
       setSaveLoading(false);
     }
   };
 
-  // Season o'zgartirish
+  // 🔹 Season o'zgartirish
   const handleSeasonChange = (season) => {
     setCurrentSeason(season);
     setCurrentEpisode(season.episodes?.[0] || null);
 
-    const params = new URLSearchParams(window.location.search);
-    params.set("season", season.season_number);
-    params.delete("part");
-    router.push(`?${params.toString()}`, { scroll: false });
+    const params = new URLSearchParams(search.toString())
+    params.set("season", season.season_number)
+    if (currentEpisode) params.set("part", currentEpisode.episode_number)
+    router.push(`${window.location.pathname}?${params.toString()}`, { scroll: false });
   };
 
-  // Episode o'zgartirish
+  // 🔹 Episode o'zgartirish
   const handleEpisodeChange = (episode) => {
     setCurrentEpisode(episode);
 
-    const params = new URLSearchParams(window.location.search);
-    if (currentSeason) params.set("season", currentSeason.season_number);
-    params.set("part", episode.episode_number);
-    router.push(`?${params.toString()}`, { scroll: false });
+    const params = new URLSearchParams(search.toString())
+    if (currentSeason) params.set("season", currentSeason.season_number)
+    params.set("part", episode.episode_number)
+    router.push(`${window.location.pathname}?${params.toString()}`, { scroll: false });
   };
 
   if (!anime) {
@@ -410,6 +406,7 @@ export default function AnimeDetail() {
       <AuthModal
         isOpen={showAuthModal}
         onClose={closeAuthModal}
+        onLogin={handleAuthRedirect}
       />
 
       <div className="anime-detail-container">
@@ -527,9 +524,8 @@ export default function AnimeDetail() {
           {/* Likes / Dislikes */}
           <div className="like-comments">
             <div className="like-dislike">
-              <div className={`like ${likeStatus === 0 ? "active" : ""} ${likeLoading ? 'loading' : ''}`}>
+              <div className={`like ${likeStatus === 0 ? "active" : ""} ${likeLoading ? 'loading' : ''}`} onClick={() => handleLike(0)}>
                 <button
-                  onClick={() => handleLike(0)}
                   disabled={likeLoading}
                 >
                   {likeLoading ? (
@@ -555,12 +551,11 @@ export default function AnimeDetail() {
                   )}
                 </button>
               </div>
-              <div className={`dis-like ${likeStatus === 1 ? "active" : ""} ${dislikeLoading ? 'loading' : ''}`}>
+              <div className={`dis-like ${likeStatus === 1 ? "active" : ""} ${likeLoading ? 'loading' : ''}`} onClick={() => handleLike(1)}>
                 <button
-                  onClick={() => handleLike(1)}
-                  disabled={dislikeLoading}
+                  disabled={likeLoading}
                 >
-                  {dislikeLoading ? (
+                  {likeLoading ? (
                     <div className="spinner-small"></div>
                   ) : (
                     <>
