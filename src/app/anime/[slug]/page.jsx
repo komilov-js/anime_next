@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useContext, useRef } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { FaTelegramPlane } from "react-icons/fa";
 import { AuthContext } from "../../components/context/context";
 import { fetchWithAuth, likeWithAuth } from "../../components/utlis/auth";
@@ -60,6 +60,8 @@ const useRequestCounter = () => {
 
 export default function AnimeDetail() {
   const { slug } = useParams();
+  const router = useRouter()
+  const search = useSearchParams()
   const [anime, setAnime] = useState(null);
   const [currentSeason, setCurrentSeason] = useState(null);
   const [currentEpisode, setCurrentEpisode] = useState(null);
@@ -148,7 +150,7 @@ export default function AnimeDetail() {
   // Like statistikasini olish
   const fetchLikeStats = async (animeSlug) => {
     try {
-      const response = await fetchWithCounter(`https://api.anivibe.uz/api/animes/${animeSlug}/likes/`);
+      const response = await fetchWithCounter(`http://api.anivibe.uz/api/animes/${animeSlug}/likes/`);
       const data = await response.json();
 
       setLikesCount(data.likes_count || 0);
@@ -165,7 +167,7 @@ export default function AnimeDetail() {
     if (!user) return;
 
     try {
-      const response = await fetchWithAuthAndCounter(`https://api.anivibe.uz/api/animes/${animeSlug}/like-status/`);
+      const response = await fetchWithAuthAndCounter(`http://api.anivibe.uz/api/animes/${animeSlug}/like-status/`);
 
       if (response && response.status !== undefined) {
         setLikeStatus(response.status);
@@ -184,7 +186,7 @@ export default function AnimeDetail() {
 
     const fetchAnime = async () => {
       try {
-        const res = await fetchWithCounter(`https://api.anivibe.uz/api/animes/${slug}/`);
+        const res = await fetchWithCounter(`http://api.anivibe.uz/api/animes/${slug}/`);
         const data = await res.json();
         setAnime(data);
 
@@ -198,16 +200,10 @@ export default function AnimeDetail() {
         // Foydalanuvchi like holatini olish
         await fetchUserLikeStatus(slug);
 
-        // Default season va episodeni o'rnatish
-        if (data.seasons?.length) {
-          setCurrentSeason(data.seasons[0]);
-          setCurrentEpisode(data.seasons[0].episodes?.[0] || null);
-        }
-
         // Foydalanuvchi saqlagan animelarni tekshirish
         if (user) {
           try {
-            const savedData = await fetchWithAuthAndCounter(`https://api.anivibe.uz/api/saved-animes/`);
+            const savedData = await fetchWithAuthAndCounter(`http://api.anivibe.uz/api/saved-animes/`);
             setSaved(
               Array.isArray(savedData) && savedData.some((item) => item.anime?.slug === data.slug)
             );
@@ -223,6 +219,17 @@ export default function AnimeDetail() {
 
     fetchAnime();
   }, [slug, user]);
+
+  useEffect(() => {
+    if (anime && anime.seasons) {
+      const searchSeason = search.get("season")
+      const season = searchSeason ? anime.seasons.find((s) => Number(s.season_number) == Number(searchSeason)) : anime.seasons[0]
+      setCurrentSeason(season)
+      const searchPart = search.get("part")
+      const animeL = searchPart ? season.episodes.find((a) => Number(a.episode_number) == Number(searchPart)) : season.episodes[0]
+      setCurrentEpisode(animeL)
+    }
+  }, [search, anime])
 
   // 🔹 Izoh yuborish
   const handleSendComment = async () => {
@@ -243,7 +250,7 @@ export default function AnimeDetail() {
 
     setLoading(true);
     try {
-      const response = await fetchWithAuthAndCounter(`https://api.anivibe.uz/api/comments/`, {
+      const response = await fetchWithAuthAndCounter(`http://api.anivibe.uz/api/comments/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -289,7 +296,7 @@ export default function AnimeDetail() {
 
     setLikeLoading(true);
     try {
-      const responseData = await likeWithAuthAndCounter(`https://api.anivibe.uz/api/likes/`, {
+      const responseData = await likeWithAuthAndCounter(`http://api.anivibe.uz/api/likes/`, {
         method: "POST",
         body: JSON.stringify({
           anime_slug: anime.slug,
@@ -345,7 +352,7 @@ export default function AnimeDetail() {
 
     setSaveLoading(true);
     try {
-      await fetchWithAuthAndCounter(`https://api.anivibe.uz/api/saved-animes/`, {
+      await fetchWithAuthAndCounter(`http://api.anivibe.uz/api/saved-animes/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ anime_slug: anime.slug }),
@@ -362,11 +369,21 @@ export default function AnimeDetail() {
   const handleSeasonChange = (season) => {
     setCurrentSeason(season);
     setCurrentEpisode(season.episodes?.[0] || null);
+
+    const params = new URLSearchParams(search.toString())
+    params.set("season", season.season_number)
+    if (currentEpisode) params.set("part", currentEpisode.episode_number)
+    router.push(`${window.location.pathname}?${params.toString()}`, { scroll: false });
   };
 
   // 🔹 Episode o'zgartirish
   const handleEpisodeChange = (episode) => {
     setCurrentEpisode(episode);
+
+    const params = new URLSearchParams(search.toString())
+    if (currentSeason) params.set("season", currentSeason.season_number)
+    params.set("part", episode.episode_number)
+    router.push(`${window.location.pathname}?${params.toString()}`, { scroll: false });
   };
 
   if (!anime) {
@@ -386,12 +403,12 @@ export default function AnimeDetail() {
         backgroundPosition: "center",
       }}
     >
-      <AuthModal 
-        isOpen={showAuthModal} 
+      <AuthModal
+        isOpen={showAuthModal}
         onClose={closeAuthModal}
         onLogin={handleAuthRedirect}
       />
-      
+
       <div className="anime-detail-container">
         {/* Video / Episode */}
         <div className="anime-video">
