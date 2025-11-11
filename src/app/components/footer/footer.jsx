@@ -14,7 +14,7 @@ const Footer = () => {
 
     const fetchCategories = async () => {
       try {
-        const res = await fetch("http://api.anivibe.uz/api/categories/");
+        const res = await fetch("https://api.anivibe.uz/api/categories/");
         const data = await res.json();
         setCategories(data);
       } catch (error) {
