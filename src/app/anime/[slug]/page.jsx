@@ -132,7 +132,7 @@ export default function AnimeDetail() {
   // Like statistikasini olish
   const fetchLikeStats = async (animeSlug) => {
     try {
-      const response = await fetchWithCounter(`http://api.anivibe.uz/api/animes/${animeSlug}/likes/`);
+      const response = await fetchWithCounter(`https://api.anivibe.uz/api/animes/${animeSlug}/likes/`);
       if (response.ok) {
         const data = await response.json();
         setLikesCount(data.likes_count || 0);
@@ -150,7 +150,7 @@ export default function AnimeDetail() {
     if (!user) return;
 
     try {
-      const response = await fetchWithAuthAndCounter(`http://api.anivibe.uz/api/animes/${animeSlug}/like-status/`);
+      const response = await fetchWithAuthAndCounter(`https://api.anivibe.uz/api/animes/${animeSlug}/like-status/`);
       if (response && response.ok) {
         const data = await response.json();
         setLikeStatus(data.status);
@@ -169,7 +169,7 @@ export default function AnimeDetail() {
 
     const fetchAnime = async () => {
       try {
-        const res = await fetchWithCounter(`http://api.anivibe.uz/api/animes/${slug}/`);
+        const res = await fetchWithCounter(`https://api.anivibe.uz/api/animes/${slug}/`);
         if (!res.ok) throw new Error('Anime ma\'lumotlarini olishda xatolik');
         
         const data = await res.json();
@@ -188,7 +188,7 @@ export default function AnimeDetail() {
         // Foydalanuvchi saqlagan animelarni tekshirish
         if (user) {
           try {
-            const savedData = await fetchWithAuthAndCounter(`http://api.anivibe.uz/api/saved-animes/`);
+            const savedData = await fetchWithAuthAndCounter(`https://api.anivibe.uz/api/saved-animes/`);
             if (savedData) {
               setSaved(
                 Array.isArray(savedData) && savedData.some((item) => item.anime?.slug === data.slug)
@@ -250,7 +250,7 @@ export default function AnimeDetail() {
     setError("");
     
     try {
-      const response = await fetchWithAuthAndCounter(`http://api.anivibe.uz/api/comments/`, {
+      const response = await fetchWithAuthAndCounter(`https://api.anivibe.uz/api/comments/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -298,7 +298,7 @@ export default function AnimeDetail() {
     if (value === 1) setDislikeLoading(true);
 
     try {
-      const responseData = await likeWithAuthAndCounter(`http://api.anivibe.uz/api/likes/`, {
+      const responseData = await likeWithAuthAndCounter(`https://api.anivibe.uz/api/likes/`, {
         method: "POST",
         body: JSON.stringify({
           anime_slug: anime.slug,
@@ -355,7 +355,7 @@ export default function AnimeDetail() {
 
     setSaveLoading(true);
     try {
-      await fetchWithAuthAndCounter(`http://api.anivibe.uz/api/saved-animes/`, {
+      await fetchWithAuthAndCounter(`https://api.anivibe.uz/api/saved-animes/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ anime_slug: anime.slug }),
