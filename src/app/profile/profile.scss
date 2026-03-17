@@ -1,639 +1,710 @@
-// 🎨 Ranglar
-$primary: #f60012;
-$text: #111827;
-$light-bg: #f7f8fa;
-$light-bg-2: #f0f1f5;
-$dark-bg: #1a1a1a;
-$dark-card: #222;
+// profile.scss
 
-// 🔥 Profile Page
 .profile {
-  min-height: 100vh;
-  background: linear-gradient(135deg, $light-bg 0%, $light-bg-2 100%);
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  padding: 40px 20px;
-  flex-direction: column;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  position: relative;
 
-  // 🧑 Profile Info Box
-  .profile-container {
-    background: #fff;
-    padding: 30px;
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    max-width: 700px;
-    width: 100%;
+  // Toast xabarlar
+  .toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    min-width: 300px;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    color: white;
+    font-weight: 500;
+    transform: translateX(120%);
+    transition: transform 0.3s ease;
+    z-index: 1000;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+
+    &.show {
+      transform: translateX(0);
+    }
+
+    &.success {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    }
+
+    &.error {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    }
+
+    p {
+      margin: 0;
+      font-size: 0.95rem;
+    }
+  }
+
+  // Admin Dashboard
+ // Yangilangan SCSS (faqat o'zgargan qismlar)
+
+// Admin Dashboard
+.admin-dashboard {
+  background: #1e1e2f; // Oddiy to'q fon
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  color: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
     display: flex;
-    align-items: flex-start;
-    gap: 30px;
+    align-items: center;
+    gap: 0.5rem;
+    color: #fff;
 
-    .tahrir {
-      display: flex;
-      align-items: flex-start;
-      gap: 15px;
-      position: relative;
+    &::before {
+      content: '⚡';
+      font-size: 1.5rem;
+    }
+  }
 
-      .image-container {
-        position: relative;
-        display: inline-block;
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1rem;
 
-        &:hover {
-          .image-upload-overlay {
-            opacity: 1;
-          }
+    .stat-card {
+      background: #2d2d3f; // Oddiy to'q kulrang
+      border-radius: 12px;
+      padding: 1.25rem;
+      border: 1px solid #3d3d4f;
+
+      .stat-icon {
+        width: 40px;
+        height: 40px;
+        background: #3d3d4f;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1rem;
+
+        svg {
+          width: 20px;
+          height: 20px;
+          color: #a5a5c7;
+        }
+      }
+
+      .stat-info {
+        h3 {
+          font-size: 0.85rem;
+          font-weight: 500;
+          color: #a5a5c7;
+          margin-bottom: 0.5rem;
+          letter-spacing: 0.3px;
         }
 
-        .image-upload-overlay {
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background: rgba(0, 0, 0, 0.7);
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          opacity: 0;
-          transition: opacity 0.3s ease;
-          cursor: pointer;
+        .stat-number {
+          font-size: 1.8rem;
+          font-weight: 600;
+          margin-bottom: 0.25rem;
+          color: #fff;
+          line-height: 1;
+        }
 
-          .upload-label {
-            color: white;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 5px;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
+        small {
+          font-size: 0.75rem;
+          color: #a5a5c7;
+          display: block;
+        }
+      }
+    }
+  }
 
-            svg {
-              width: 24px;
-              height: 24px;
-            }
+  .small-loader {
+    width: 24px;
+    height: 24px;
+    border: 2px solid #3d3d4f;
+    border-top: 2px solid #667eea;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+}
+
+// Responsive dizayn
+@media (max-width: 768px) {
+  .profile {
+    .admin-dashboard {
+      padding: 1rem;
+
+      h2 {
+        font-size: 1.3rem;
+        margin-bottom: 1rem;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+
+        .stat-card {
+          padding: 1rem;
+
+          .stat-number {
+            font-size: 1.5rem;
           }
         }
       }
     }
+  }
+}
 
-    .qalam {
-      width: 40px;
-      height: 40px;
+  // Profil container
+  .profile-container {
+    background: white;
+    border-radius: 24px;
+    padding: 2rem;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+    margin-bottom: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+
+    @media (min-width: 768px) {
+      flex-direction: row;
+      align-items: flex-start;
+      gap: 3rem;
+    }
+  }
+
+  // Tahrir qismi
+// Tahrir qismi
+.tahrir {
+  position: relative;
+  flex-shrink: 0;
+
+  .avatar-container {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border: 3px solid #f0f0f0;
+
+    .avatar-initial {
+      font-size: 4rem;
+      font-weight: 600;
+      color: white;
+      text-shadow: none;
+      user-select: none;
+    }
+
+    .avatar-upload-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.6);
       display: flex;
       align-items: center;
       justify-content: center;
-      background-color: $primary;
-      border-radius: 50%;
-      cursor: pointer;
-      transition: all 0.3s ease;
+      opacity: 0;
+      transition: opacity 0.2s ease;
 
       &:hover {
-        transform: scale(1.1);
-        background-color: darken($primary, 10%);
+        opacity: 1;
       }
 
-      svg {
-        width: 20px;
-        height: 20px;
-        stroke: white;
-        stroke-width: 2;
-      }
-    }
+      .upload-label {
+        color: white;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.8rem;
+        text-align: center;
 
-    img.profile-img {
-      width: 140px;
-      height: 140px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 3px solid $primary;
-      transition: transform 0.4s ease;
-
-      &:hover {
-        transform: scale(1.05);
+        svg {
+          width: 30px;
+          height: 30px;
+          stroke: white;
+        }
       }
     }
+  }
+
+  .qalam {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 36px;
+    height: 36px;
+    background: #4a5568; // Oddiy kulrang
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    border: 2px solid white;
+
+    &:hover {
+      background: #2d3748; // Hoverda biroz quyuqroq
+    }
+
+    svg {
+      width: 18px;
+      height: 18px;
+      stroke: white;
+    }
+  }
+}
+
+// Responsive dizayn
+@media (max-width: 768px) {
+  .profile {
+    .tahrir {
+      .qalam {
+        width: 32px;
+        height: 32px;
+        
+        svg {
+          width: 16px;
+          height: 16px;
+        }
+      }
+    }
+  }
+}
+
+  // Profil info
+  .profile-info {
+    flex: 1;
 
     ul {
-      flex: 1;
       list-style: none;
       padding: 0;
       margin: 0;
 
       li {
-        font-size: 16px;
-        padding: 10px 0;
-        border-bottom: 1px solid #eee;
-        color: $text;
-
-        strong {
-          color: $primary;
-          margin-right: 6px;
-        }
+        padding: 1rem 0;
+        border-bottom: 1px solid #f0f0f0;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
 
         &:last-child {
           border-bottom: none;
         }
-      }
-    }
 
-    // ✏️ Edit Form
-    .edit-form {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-
-      .form-group {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-
-        label {
-          font-weight: 600;
-          color: $text;
-          font-size: 14px;
+        strong {
+          min-width: 140px;
+          color: #666;
+          font-weight: 500;
+          font-size: 0.95rem;
         }
 
-        .form-input {
-          padding: 12px 16px;
-          border: 2px solid #e5e7eb;
-          border-radius: 10px;
-          font-size: 16px;
-          transition: all 0.3s ease;
-
-          &:focus {
-            outline: none;
-            border-color: $primary;
-            box-shadow: 0 0 0 3px rgba($primary, 0.1);
-          }
-        }
-      }
-
-      .form-buttons {
-        display: flex;
-        gap: 12px;
-        margin-top: 10px;
-
-        .save-btn,
-        .cancel-btn {
-          padding: 12px 24px;
-          border: none;
-          border-radius: 10px;
-          font-weight: 600;
-          cursor: pointer;
-          transition: all 0.3s ease;
-          font-size: 14px;
-        }
-
-        .save-btn {
-          background: $primary;
+        .admin-badge {
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
           color: white;
-
-          &:hover {
-            background: darken($primary, 10%);
-            transform: translateY(-2px);
-          }
+          padding: 0.25rem 1rem;
+          border-radius: 20px;
+          font-size: 0.85rem;
+          font-weight: 500;
+          letter-spacing: 0.5px;
         }
-
-        .cancel-btn {
-          background: #6b7280;
-          color: white;
-
-          &:hover {
-            background: #4b5563;
-            transform: translateY(-2px);
-          }
-        }
-      }
-    }
-
-    // 🚪 Logout Button
-    .anime-logout-btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 10px 15px;
-      border: none;
-      border-radius: 12px;
-      background: linear-gradient(135deg, $primary, #ff3b3b);
-      color: #fff;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-
-      &:hover {
-        background: linear-gradient(135deg, #e00010, $primary);
-        transform: translateY(-3px);
-        box-shadow: 0 8px 18px rgba($primary, 0.4);
-      }
-
-      &:active {
-        transform: translateY(0);
-        box-shadow: none;
       }
     }
   }
 
-  // 📂 Saved Animes
-  .saved-animes {
-    margin-top: 50px;
-    width: 100%;
-    max-width: 1200px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+  // Edit form
+  .edit-form {
+    flex: 1;
 
+    .form-group {
+      margin-bottom: 1.5rem;
+
+      label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: #666;
+        font-weight: 500;
+        font-size: 0.9rem;
+      }
+
+      .form-input, .form-input-file {
+        width: 100%;
+        padding: 0.8rem 1rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 12px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+
+        &:focus {
+          outline: none;
+          border-color: #667eea;
+          box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        &:disabled {
+          background: #f5f5f5;
+          cursor: not-allowed;
+        }
+      }
+
+      .form-input-file {
+        padding: 0.5rem;
+        background: #f9f9f9;
+        cursor: pointer;
+
+        &::-webkit-file-upload-button {
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          color: white;
+          padding: 0.5rem 1rem;
+          border: none;
+          border-radius: 8px;
+          cursor: pointer;
+          margin-right: 1rem;
+          transition: all 0.3s ease;
+
+          &:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+          }
+        }
+      }
+    }
+
+    .form-buttons {
+      display: flex;
+      gap: 1rem;
+
+      .save-btn, .cancel-btn {
+        padding: 0.8rem 2rem;
+        border: none;
+        border-radius: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 1rem;
+
+        &:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+      }
+
+      .save-btn {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+        box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+
+        &:hover:not(:disabled) {
+          transform: translateY(-2px);
+          box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+        }
+
+        .button-loader {
+          width: 20px;
+          height: 20px;
+          border: 2px solid white;
+          border-top: 2px solid transparent;
+          border-radius: 50%;
+          animation: spin 1s linear infinite;
+          margin: 0 auto;
+        }
+      }
+
+      .cancel-btn {
+        background: #f0f0f0;
+        color: #666;
+
+        &:hover:not(:disabled) {
+          background: #e0e0e0;
+        }
+      }
+    }
+  }
+
+  // Logout button
+  .anime-logout-btn {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+    border: none;
+    padding: 0.8rem 2rem;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
+    }
+
+    svg {
+      stroke: white;
+    }
+  }
+
+  // Saved animes section
+  .saved-animes {
     h3 {
-      font-size: 26px;
-      font-weight: 700;
-      color: $text;
-      margin-bottom: 20px;
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+      color: #333;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+
+      &::after {
+        content: '';
+        flex: 1;
+        height: 2px;
+        background: linear-gradient(90deg, #667eea 0%, transparent 100%);
+      }
+    }
+
+    .no-anime {
+      text-align: center;
+      padding: 3rem;
+      background: #f9f9f9;
+      border-radius: 20px;
+      color: #999;
+      font-size: 1.1rem;
     }
 
     .anime-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
 
-      .page-anime-container {
-        .card-img {
-          position: relative;
-          border-radius: 12px;
-          overflow: hidden;
-          transition: all 0.4s ease;
-          cursor: pointer;
+      @media (min-width: 768px) {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      }
+    }
 
-          &:hover {
-            transform: translateY(-6px) scale(1.02);
-            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+    .page-anime-container {
+      transition: all 0.3s ease;
+
+      &:hover {
+        transform: translateY(-5px);
+      }
+
+      .card-img {
+        position: relative;
+        border-radius: 16px;
+        overflow: hidden;
+        aspect-ratio: 3/4;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          transition: transform 0.5s ease;
+        }
+
+        .card-text {
+          position: absolute;
+          top: 10px;
+          left: 10px;
+          background: rgba(0, 0, 0, 0.8);
+          color: white;
+          padding: 0.25rem 0.75rem;
+          border-radius: 20px;
+          font-size: 0.8rem;
+          font-weight: 500;
+          z-index: 2;
+        }
+
+        .image-text {
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          padding: 1rem;
+          background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
+          color: white;
+          font-weight: 600;
+          font-size: 0.9rem;
+          transform: translateY(100%);
+          transition: transform 0.3s ease;
+        }
+
+        .card-icon {
+          position: absolute;
+          top: 10px;
+          right: 10px;
+          z-index: 2;
+
+          .save-icon {
+            filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.3));
+            transition: all 0.2s ease;
+
+            &:hover {
+              transform: scale(1.1);
+            }
+
+            path {
+              transition: all 0.2s ease;
+            }
+
+            &:hover path {
+              fill: #ff4444;
+              stroke: #ff4444;
+            }
           }
+        }
 
+        &:hover {
           img {
-            width: 100%;
-            height: 280px;
-            object-fit: cover;
-            transition: all 0.4s ease;
-          }
-
-          .card-text {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            background: rgba(52, 52, 52, 0.7);
-            color: #fff;
-            padding: 5px 10px;
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: 600;
+            transform: scale(1.05);
           }
 
           .image-text {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            padding: 15px;
-            background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.3) 60%, transparent 100%);
-            color: #fff;
-            font-weight: 600;
-            font-size: 16px;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-            line-height: 1.2;
-
-            // ✂️ Text limit
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-          }
-
-          .card-icon {
-            position: absolute;
-            bottom: 15px;
-            right: 15px;
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            background: rgba(0, 0, 0, 0.6);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-
-            &:hover {
-              transform: scale(1.15);
-            }
-
-            .heart-icon {
-              width: 20px;
-              height: 20px;
-              stroke-width: 2;
-              transition: all 0.3s ease;
-
-              &.favorite {
-                fill: $primary;
-                stroke: $primary;
-                animation: pulse 0.5s ease;
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-
-  // 🧃 Toast Xabar
-  .toast {
-    position: fixed;
-    bottom: 30px;
-    left: 50%;
-    transform: translateX(-50%) translateY(100%);
-    background: #fff;
-    color: $text;
-    border-radius: 12px;
-    padding: 14px 26px;
-    font-weight: 600;
-    font-size: 15px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-    opacity: 0;
-    transition: all 0.4s ease;
-    z-index: 9999;
-
-    &.show {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
-
-    &.success {
-      background: linear-gradient(135deg, #16a34a, #22c55e);
-      color: #fff;
-    }
-
-    &.error {
-      background: linear-gradient(135deg, #dc2626, #ef4444);
-      color: #fff;
-    }
-  }
-
-  // ❤️ Heart Animation
-  @keyframes pulse {
-    0% {
-      transform: scale(1);
-    }
-
-    50% {
-      transform: scale(1.3);
-    }
-
-    100% {
-      transform: scale(1);
-    }
-  }
-
-  // 📱 Responsive
-  @media (max-width: 768px) {
-    .page-anime-container {
-      width: 190px;
-      height: auto;
-    }
-
-    .profile-container {
-      flex-direction: column;
-      text-align: left;
-      align-items: center;
-
-      .tahrir {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-      }
-
-      img.profile-img {
-        width: 120px;
-        height: 120px;
-        object-fit: cover;
-      }
-
-      .edit-form {
-        width: 100%;
-
-        .form-buttons {
-          flex-direction: column;
-        }
-      }
-    }
-
-    .saved-animes .anime-grid {
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    }
-
-    .saved-animes .page-anime-container .card-img img {
-      height: 170px;
-    }
-  }
-
-  @media (max-width: 480px) {
-    .profile-container {
-      padding: 20px;
-      gap: 15px;
-
-      img.profile-img {
-        width: 100px;
-        height: 100px;
-      }
-    }
-
-    .page-anime-container {
-      .card-img {
-        width: 170px;
-        height: 220px;
-        object-fit: cover;
-      }
-    }
-
-    .saved-animes h3 {
-      font-size: 20px;
-    }
-  }
-}
-
-// 🌙 Dark Mode
-body.dark {
-  .profile {
-    background: linear-gradient(135deg, $dark-bg, #111);
-    color: #fff;
-
-    .profile-container {
-      background: $dark-card;
-      color: #fff;
-
-      li {
-        border-color: rgba(255, 255, 255, 0.1);
-      }
-
-      .edit-form {
-        .form-group {
-          label {
-            color: #fff;
-          }
-
-          .form-input {
-            background: #333;
-            border-color: #444;
-            color: #fff;
-
-            &:focus {
-              border-color: $primary;
-            }
+            transform: translateY(0);
           }
         }
       }
     }
 
-    .saved-animes h3 {
-      color: #fff;
+    // Pagination
+    .pagination {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+
+      .pagination-btn {
+        width: 40px;
+        height: 40px;
+        border: none;
+        background: white;
+        border-radius: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+        &:hover:not(:disabled) {
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          color: white;
+          transform: translateY(-2px);
+          box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        &:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+
+        &.active {
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          color: white;
+          box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+      }
     }
   }
 }
 
-.admin-dashboard {
-  background-color: black;
-  border-radius: 12px;
-  padding: 24px;
-  margin-bottom: 30px;
-  color: white;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-
-  h2 {
-    margin-bottom: 20px;
-    font-size: 1.5rem;
-    font-weight: 600;
-  }
-}
-
-.stats-grid {
-  display: flex;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 2fr));
-  gap: 16px;
-}
-
-.stat-card {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border-radius: 8px;
-  padding: 20px;
-  display: flex;
-
-  align-items: center;
-  gap: 16px;
-  transition: transform 0.2s ease;
-
-  &:hover {
-    transform: translateY(-2px);
-  }
-}
-
-.stat-icon {
-  width: 48px;
-  height: 48px;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  svg {
-    color: white;
-  }
-}
-
-.stat-info {
-  flex: 1;
-
-  h3 {
-    font-size: 0.9rem;
-    opacity: 0.9;
-    margin-bottom: 4px;
-    font-weight: 500;
-  }
-
-  .stat-number {
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin-bottom: 4px;
-  }
-
-  small {
-    font-size: 0.75rem;
-    opacity: 0.8;
-  }
-}
-
-.small-loader {
-  width: 20px;
-  height: 20px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-radius: 50%;
-  border-top-color: white;
-  animation: spin 1s ease-in-out infinite;
-}
-
-.button-loader {
-  width: 16px;
-  height: 16px;
-  border: 2px solid transparent;
-  border-radius: 50%;
-  border-top-color: currentColor;
-  animation: spin 1s ease-in-out infinite;
-}
-
+// Animatsiyalar
 @keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
   to {
     transform: rotate(360deg);
   }
 }
 
-.admin-badge {
-  background: #ff6b6b;
-  color: white;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 0.8rem;
-  font-weight: 600;
-}
-
-// Responsive design
+// Responsive dizayn
 @media (max-width: 768px) {
-  .admin-dashboard {
-    padding: 16px;
-    margin-bottom: 20px;
-  }
+  .profile {
+    padding: 1rem;
 
-  .stats-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-  }
+    .toast {
+      min-width: 250px;
+      left: 1rem;
+      right: 1rem;
+      top: 10px;
+    }
 
-  .stat-card {
-    padding: 16px;
-  }
+    .admin-dashboard {
+      padding: 1.5rem;
 
-  .stat-icon {
-    width: 40px;
-    height: 40px;
-  }
-}
+      h2 {
+        font-size: 1.5rem;
+      }
 
-@media (max-width: 480px) {
-  .admin-dashboard{
-    font-size: 10px;
-  }
-  .stats-grid {
-    grid-template-columns: 1fr;
-    flex-wrap: wrap;
-    font-size: 10px;
+      .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+
+        .stat-card {
+          padding: 1rem;
+
+          .stat-number {
+            font-size: 1.8rem;
+          }
+        }
+      }
+    }
+
+    .profile-container {
+      padding: 1.5rem;
+
+      .tahrir {
+        .avatar-container {
+          width: 120px;
+          height: 120px;
+          margin: 0 auto;
+
+          .avatar-initial {
+            font-size: 3rem;
+          }
+        }
+      }
+
+      .profile-info ul li {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.25rem;
+
+        strong {
+          min-width: auto;
+        }
+      }
+
+      .edit-form .form-buttons {
+        flex-direction: column;
+
+        .save-btn, .cancel-btn {
+          width: 100%;
+        }
+      }
+
+      .anime-logout-btn {
+        width: 100%;
+      }
+    }
   }
 }

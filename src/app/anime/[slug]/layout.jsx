@@ -1,11 +1,16 @@
 import AnimeDetail from "./page";
 
+// params endi Promise sifatida keladi (Next.js 15+)
 export async function generateMetadata({ params }) {
-  const { slug } = params;
+  // 1. params'ni await qilish shart
+  const { slug } = await params; 
 
   try {
-    const res = await fetch(`https://api.anivibe.uz/api/animes/${slug}/`, {
-      next: { revalidate: 3600 }, // 1 soatda yangilansin
+    // 2. URL to'g'riligini tekshirish (ixtiyoriy, lekin foydali)
+    const apiUrl = `https://api.anivibe.uz/api/animes/${slug}/`;
+    
+    const res = await fetch(apiUrl, {
+      next: { revalidate: 3600 },
     });
 
     if (!res.ok) {
@@ -17,11 +22,8 @@ export async function generateMetadata({ params }) {
 
     const anime = await res.json();
 
-    const currentSeason = anime.seasons?.[0];
-    const currentEpisode = currentSeason?.episodes?.[0];
-
-    const seoTitle = `${anime.title}`;
-
+    // SEO ma'lumotlarini shakllantirish
+    const seoTitle = anime.title || "Noma'lum Anime";
     const seoDescription = `${
       anime.description?.slice(0, 150) || `${anime.title} anime seriali`
     } | ${anime.genre || "Anime"} | ${anime.year || "2024"} | HD sifatda`;
@@ -37,7 +39,7 @@ export async function generateMetadata({ params }) {
         type: "video.other",
         title: seoTitle,
         description: seoDescription,
-        images: [seoImage],
+        images: [{ url: seoImage }], // Obyekt ko'rinishida bergan ma'qul
         url: seoUrl,
         siteName: "Anivibe",
       },

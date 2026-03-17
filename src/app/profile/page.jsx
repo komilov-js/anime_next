@@ -22,7 +22,6 @@ const Profile = () => {
         email: "",
         profile_img: null
     });
-    const [imagePreview, setImagePreview] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
 
     // Admin stats state
@@ -52,9 +51,7 @@ const Profile = () => {
     const fetchAdminStats = async () => {
         setIsLoadingStats(true);
         try {
-            // Yangi admin-stats API dan foydalaning
             const statsData = await fetchWithAuth("https://api.anivibe.uz/api/users/admin-stats/");
-
             setAdminStats({
                 userCount: statsData.userCount || 0,
                 animeCount: statsData.animeCount || 0,
@@ -65,10 +62,7 @@ const Profile = () => {
             });
         } catch (error) {
             console.error("Statistika olishda xatolik:", error);
-
-            // Agar yangi API ishlamasa, eski usul bilan olish
             try {
-                console.log("Yangi API ishlamadi, eski usul bilan olinmoqda...");
                 await fetchAdminStatsFallback();
             } catch (fallbackError) {
                 console.error("Fallback ham ishlamadi:", fallbackError);
@@ -79,17 +73,12 @@ const Profile = () => {
         }
     };
 
-    // Eski usul (fallback)
     const fetchAdminStatsFallback = async () => {
-        // Foydalanuvchilar soni
         const usersData = await fetchWithAuth("https://api.anivibe.uz/api/users/");
         const userCount = usersData.count || usersData.length || 0;
-
-        // Anime va seriallar soni
         const animeData = await fetchWithAuth("https://api.anivibe.uz/api/animes/");
         const animeCount = animeData.count || animeData.length || 0;
-
-        // Episodlar soni
+        
         let seriesCount = 0;
         try {
             const seriesData = await fetchWithAuth("https://api.anivibe.uz/api/episodes/");
@@ -102,20 +91,18 @@ const Profile = () => {
             userCount,
             animeCount,
             seriesCount,
-            activeUsers: userCount, // taxminiy
+            activeUsers: userCount,
             staffUsers: 0,
             totalContent: animeCount + seriesCount
         });
     };
 
-    // 🧾 Xabar chiqish funksiyasi
     const showMessage = (text, type) => {
         setMessage(text);
         setMessageType(type);
         setTimeout(() => setMessage(null), 3000);
     };
 
-    // 🧭 Ma'lumotlarni olish
     useEffect(() => {
         const getProfileData = async () => {
             try {
@@ -127,22 +114,14 @@ const Profile = () => {
                     profile_img: null
                 });
 
-                // Profile image preview
-                if (profileData.profile_img) {
-                    setImagePreview(`https://api.anivibe.uz/${profileData.profile_img}`);
-                }
-
                 const savedData = await fetchWithAuth("https://api.anivibe.uz/api/saved-animes/");
                 if (Array.isArray(savedData)) setSavedAnimes(savedData);
                 else if (savedData?.results) setSavedAnimes(savedData.results);
                 else setSavedAnimes([]);
 
-                // Agar user admin bo'lsa, statistikani olish
                 if (profileData.is_staff || profileData.is_superuser) {
                     await fetchAdminStats();
-                    
                 }
-                console.log(profileData);
                 
             } catch (error) {
                 console.error("Ma'lumot olishda xatolik:", error);
@@ -169,7 +148,6 @@ const Profile = () => {
         );
     }
 
-    // ❤️ Saqlangan anime belgisi (o'chirish tugmasi bilan)
     const SaveIcon = ({ slug }) => (
         <svg
             width="22"
@@ -192,7 +170,6 @@ const Profile = () => {
         </svg>
     );
 
-    // ❌ O'chirish funksiyasi (slug orqali)
     const handleUnsave = async (slug) => {
         try {
             const res = await fetchWithAuth(`https://api.anivibe.uz/api/saved-animes/${slug}/`, {
@@ -210,12 +187,10 @@ const Profile = () => {
         }
     };
 
-    // ✏️ Profilni tahrirlash funksiyasi
     const handleEdit = () => {
         setIsEditing(true);
     };
 
-    // ❌ Tahrirlashni bekor qilish
     const handleCancel = () => {
         setIsEditing(false);
         setEditForm({
@@ -223,10 +198,8 @@ const Profile = () => {
             email: profile.email || "",
             profile_img: null
         });
-        setImagePreview(profile.profile_img ? `https://api.anivibe.uz/${profile.profile_img}` : null);
     };
 
-    // ✅ Tahrirlashni saqlash
     const handleSave = async () => {
         if (!editForm.username.trim() || !editForm.email.trim()) {
             showMessage("Username va email maydonlari to'ldirilishi shart!", "error");
@@ -250,11 +223,6 @@ const Profile = () => {
             });
 
             setProfile(updatedProfile);
-            
-            if (updatedProfile.profile_img) {
-                setImagePreview(`https://api.anivibe.uz/${updatedProfile.profile_img}`);
-            }
-            
             setIsEditing(false);
             showMessage("Profil muvaffaqiyatli yangilandi!", "success");
 
@@ -266,7 +234,6 @@ const Profile = () => {
         }
     };
 
-    // 📁 Rasm tanlash
     const handleImageChange = (e) => {
         const file = e.target.files[0];
         if (file) {
@@ -284,12 +251,9 @@ const Profile = () => {
                 ...editForm,
                 profile_img: file
             });
-            
-            setImagePreview(URL.createObjectURL(file));
         }
     };
 
-    // 📄 Input o'zgarishlari
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setEditForm({
@@ -298,7 +262,6 @@ const Profile = () => {
         });
     };
 
-    // 📄 Pagination
     const totalPages = Math.ceil(savedAnimes.length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
     const selectedAnimes = savedAnimes.slice(startIndex, startIndex + itemsPerPage);
@@ -308,19 +271,39 @@ const Profile = () => {
         window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
-    // Admin panelini ko'rsatish
     const isAdmin = profile?.is_staff || profile?.is_superuser;
+
+    // Foydalanuvchi bosh harfini olish
+    const getUserInitial = () => {
+        if (profile?.username) {
+            return profile.username.charAt(0).toUpperCase();
+        }
+        return "U";
+    };
+
+    // Ranglarni generatsiya qilish (username asosida)
+    const getAvatarColor = () => {
+        const colors = [
+            "#667eea", "#764ba2", "#f43f5e", "#10b981", 
+            "#f59e0b", "#8b5cf6", "#ec4899", "#14b8a6",
+            "#f97316", "#6b7280", "#ef4444", "#3b82f6"
+        ];
+        
+        if (profile?.username) {
+            const index = profile.username.length % colors.length;
+            return colors[index];
+        }
+        return colors[0];
+    };
 
     return (
         <div className="profile">
-            {/* 🔔 Xabar chiqadigan joy */}
             {message && (
                 <div className={`toast ${messageType} show`}>
                     <p>{message}</p>
                 </div>
             )}
 
-            {/* 🎯 Admin Dashboard */}
             {isAdmin && (
                 <div className="admin-dashboard">
                     <h2>Admin Panel</h2>
@@ -415,20 +398,14 @@ const Profile = () => {
 
             <div className="profile-container">
                 <div className="tahrir">
-                    <div className="image-container">
-                        <Image
-                            className="profile-img"
-                            src={imagePreview || (profile.profile_img ? `https://api.anivibe.uz/${profile.profile_img}` : defImg)}
-                            alt={profile?.username || "Profile image"}
-                            width={150}
-                            height={150}
-                            onError={(e) => {
-                                e.target.src = defImg.src;
-                            }}
-                        />
+                    <div 
+                        className="avatar-container"
+                        style={{ backgroundColor: getAvatarColor() }}
+                    >
+                        <span className="avatar-initial">{getUserInitial()}</span>
                         
                         {isEditing && (
-                            <div className="image-upload-overlay">
+                            <div className="avatar-upload-overlay">
                                 <label htmlFor="profile-image" className="upload-label">
                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                                         <path d="M3 9L12 2L21 9V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V9Z" stroke="white" strokeWidth="2"/>
@@ -481,6 +458,16 @@ const Profile = () => {
                                 className="form-input"
                                 disabled={isLoading}
                                 placeholder="Email manzil"
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label>Profil rasmi (ixtiyoriy):</label>
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleImageChange}
+                                className="form-input-file"
+                                disabled={isLoading}
                             />
                         </div>
                         <div className="form-buttons">
