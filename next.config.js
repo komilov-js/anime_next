@@ -10,6 +10,7 @@ const nextConfig = {
       { protocol: "http", hostname: "cdn.amediatv.uz" },
       { protocol: "https", hostname: "cdn.amediatv.uz" },
 
+      // Boshqa rasm manbalari
       { protocol: "https", hostname: "i.pinimg.com" },
       { protocol: "https", hostname: "i.namu.wiki" },
       { protocol: "https", hostname: "media.tenor.com" },
@@ -22,8 +23,12 @@ const nextConfig = {
       // Yangi qo'shilgan hostname'lar
       { protocol: "https", hostname: "i.redd.it" },
       { protocol: "https", hostname: "*.redd.it" }, // Barcha subdomainlar uchun
+
+      // 🆕 Amazon rasmlari uchun
+      { protocol: "https", hostname: "m.media-amazon.com" },
     ],
   },
+  output: "standalone",
 };
 
 export default nextConfig;
